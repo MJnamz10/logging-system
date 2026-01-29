@@ -1,37 +1,48 @@
+/* ===== GLOBAL ===== */
 html,
 body {
   width: 100%;
   height: 100%;
+  margin: 0;
 }
 
 body {
-  max-height: 50vh;
-  max-width: 175vh;
   background: url("../assets/bg3.png") center / cover no-repeat fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
-
+/* ===== LOGIN CONTAINER ===== */
 .login-container {
   width: 450px;
   height: 530px;
-  margin: 100px auto;
+
+  max-width: 90%;
+  max-height: 90vh;
+  
+  margin: 0;
+  position: relative;
+  top: 0;
   padding: 20px;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ff6a00;
+  opacity: 0.9;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
-  top: 40px;
-  border: 1px solid #ff6a00;
-  opacity: 0.9;
 }
 
+/* ===== INPUTS ===== */
 .email {
   border-radius: 10px;
   border: 2px solid #d1d5dc;
   width: 405px;
+  max-width: 100%;
   height: 35px;
   position: relative;
   bottom: 20px;
@@ -39,18 +50,23 @@ body {
   font-size: 15px;
   color: black;
 }
+
 .password {
   border-radius: 10px;
   border: 2px solid #d1d5dc;
   width: 405px;
+  max-width: 100%;
   height: 35px;
   position: relative;
   bottom: 30px;
   padding-left: 10px;
   font-size: 15px;
 }
+
+/* ===== BUTTON ===== */
 .login-container button {
   width: 420px;
+  max-width: 100%;
   height: 40px;
   padding: 10px;
   font-size: 16px;
@@ -63,9 +79,12 @@ body {
   position: relative;
   bottom: 20px;
 }
+
 .login-container button:hover {
   background-color: #0046c0;
 }
+
+/* ===== TEXT ===== */
 .h1 {
   width: 280px;
   height: 10px;
@@ -73,21 +92,20 @@ body {
   color: black;
   font-size: 20px;
   line-height: 24px;
-  font-family: "Segoe UI", Arial, sans-serif;
   text-align: center;
   position: relative;
   bottom: 25px;
   font-weight: bold;
 }
+
 h3 {
-  font-family: "Segoe UI", Arial, sans-serif;
   font-size: 18px;
   font-weight: normal;
   line-height: 24px;
   color: #0a0a0a;
 }
+
 p {
-  font-family: "Segoe UI", Arial, sans-serif;
   font-size: 18px;
   font-weight: normal;
   line-height: 24px;
@@ -95,8 +113,8 @@ p {
   position: relative;
   bottom: 10px;
 }
+
 p1 {
-  font-family: "Segoe UI", Arial, sans-serif;
   font-size: 18px;
   font-weight: normal;
   line-height: 24px;
@@ -104,8 +122,9 @@ p1 {
   position: relative;
   bottom: 20px;
 }
+
+/* ===== LABEL TEXT ===== */
 .text1 {
-  font-family: "Segoe UI", Arial, sans-serif;
   font-size: 16px;
   font-weight: normal;
   line-height: 20px;
@@ -113,8 +132,8 @@ p1 {
   position: relative;
   right: 170px;
 }
+
 .text2 {
-  font-family: "Segoe UI", Arial, sans-serif;
   font-size: 16px;
   font-weight: normal;
   line-height: 20px;
@@ -123,7 +142,17 @@ p1 {
   right: 170px;
   bottom: 20px;
 }
+
+/* ===== LOGO ===== */
 .logo {
-  width: 120 px;
+  width: 120px;
   margin-bottom: 20px;
+}
+
+/* ===== MOBILE SAFETY (NO STYLE CHANGE) ===== */
+@media (max-width: 480px) {
+  .login-container {
+    height: auto;
+    padding: 20px;
+  }
 }
