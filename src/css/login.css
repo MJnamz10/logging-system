@@ -1,0 +1,129 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  max-height: 50vh;
+  max-width: 175vh;
+  background: url("../assets/bg3.png") center / cover no-repeat fixed;
+}
+
+.login-container {
+  width: 450px;
+  height: 530px;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 40px;
+  border: 1px solid #ff6a00;
+  opacity: 0.9;
+}
+
+.email {
+  border-radius: 10px;
+  border: 2px solid #d1d5dc;
+  width: 405px;
+  height: 35px;
+  position: relative;
+  bottom: 20px;
+  padding-left: 10px;
+  font-size: 15px;
+  color: black;
+}
+.password {
+  border-radius: 10px;
+  border: 2px solid #d1d5dc;
+  width: 405px;
+  height: 35px;
+  position: relative;
+  bottom: 30px;
+  padding-left: 10px;
+  font-size: 15px;
+}
+.login-container button {
+  width: 420px;
+  height: 40px;
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background-color: #0038a8;
+  color: white;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  bottom: 20px;
+}
+.login-container button:hover {
+  background-color: #0046c0;
+}
+.h1 {
+  width: 280px;
+  height: 10px;
+  padding-top: 15px;
+  color: black;
+  font-size: 20px;
+  line-height: 24px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  text-align: center;
+  position: relative;
+  bottom: 25px;
+  font-weight: bold;
+}
+h3 {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 24px;
+  color: #0a0a0a;
+}
+p {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 24px;
+  color: #0a0a0a;
+  position: relative;
+  bottom: 10px;
+}
+p1 {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 24px;
+  color: #4a5565;
+  position: relative;
+  bottom: 20px;
+}
+.text1 {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 20px;
+  color: black;
+  position: relative;
+  right: 170px;
+}
+.text2 {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 20px;
+  color: black;
+  position: relative;
+  right: 170px;
+  bottom: 20px;
+}
+.logo {
+  width: 120 px;
+  margin-bottom: 20px;
+}
