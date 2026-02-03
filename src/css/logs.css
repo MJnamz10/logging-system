@@ -186,6 +186,186 @@
   cursor: pointer;
 }
 
+.date-picker-container {
+  position: relative;
+}
+
+.date-range-picker-popup {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 680px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+  z-index: 100;
+  cursor: default;
+}
+
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 20px;
+}
+
+.picker-header span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', sans-serif;
+}
+
+.picker-clear-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.picker-clear-btn:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.picker-months-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 10px;
+}
+
+.nav-arrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.nav-arrow:hover {
+  background-color: #f3f4f6;
+}
+
+.nav-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.month-labels {
+  display: flex;
+  width: 80%;
+  justify-content: space-around;
+}
+
+.month-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  font-family: 'Inter', sans-serif;
+}
+
+.picker-calendars {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+
+.calendar-grid {
+  flex: 1;
+}
+
+.weekday-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.weekday-header span {
+  font-size: 13px;
+  font-weight: 500;
+  color: #9ca3af;
+  font-family: 'Inter', sans-serif;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 4px;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #1f2937;
+  cursor: pointer;
+  border-radius: 50%;
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.2s;
+}
+
+.day:not(.empty):not(.active):hover {
+  background-color: #f3f4f6;
+}
+
+.day.empty {
+  cursor: default;
+}
+
+.day.selected-start.active,
+.day.selected-end.active {
+  background-color: #0022cc; /* Dark blue circle for start and end */
+  color: #fff;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+}
+
+.day.in-range-bg {
+  background-color: #e0e7ff; /* Light blue background for days in between */
+  border-radius: 0; /* Square-ish range highlight */
+  color: #1f2937;
+}
+
+/* Specific styling for the range ends to have rounded outer corners if needed, 
+   but usually a simple background is fine for a grid */
+
+.apply-filter-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #0d47a1; /* Deep blue from image */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.2s;
+}
+
+.apply-filter-btn:hover {
+  background-color: #0a3d8c;
+}
+
 .calendar-icon {
   width: 18px;
   height: 18px;

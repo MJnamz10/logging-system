@@ -1,7 +1,7 @@
 .dashboard-page {
   width: 100%;
   min-height: 100vh;
-  background-color: white;
+  background-color: #f8fafc;
   display: flex;
 }
 /* ===== DASHBOARD CONTAINER ===== */
@@ -14,17 +14,19 @@
   max-width: 20%;
   padding: 20px;
   background-color: #fff;
-  border: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  z-index: 10;
 }
 .header {
   width: 100%;
   height: 100px;
   background-color: #fff;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   color: white;
   border-bottom: solid 1px #e5e7eb;
+  z-index: 5;
 }
 .title-container {
   position: absolute;
@@ -62,6 +64,16 @@
   color: #6b7280;
   font-weight: bold;
 }
+
+.sidebar-divider {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
 .dash-options {
   display: flex;
   flex-direction: column; /* stack items vertically */
@@ -77,14 +89,15 @@
 .dashboard-container .dash-options .item,
 .dashboard-container .dash-options .active-item {
   display: flex;
-  align-items: left; /* vertical center text */
-  justify-content: left; /* horizontal center text */
+  align-items: center; /* vertical center text */
+  justify-content: flex-start; /* horizontal center text */
   padding-left: 60px;
   height: 60px; /* option height */
   background-color: white;
   border-radius: 8px;
   font-family: "Inter", sans-serif;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 .dash-options .item:hover {
   background-color: #efefef;

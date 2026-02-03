@@ -18,6 +18,7 @@ function Dashboard() {
           <h1>Logging System</h1>
           <h2>MENU</h2>
         </div>
+        <div className="sidebar-divider"></div>
         <div className="dash-options">
           <div
             className={
