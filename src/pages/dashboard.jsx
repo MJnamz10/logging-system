@@ -70,6 +70,15 @@ function Dashboard() {
               </span>
             </div>
           </div>
+          <div className="quick-actions">
+            <div className="actions-items">
+              <button className="action">
+                <p className="add">Add Log Entry</p>
+                <p className="record">Record a new event or note</p></button>
+              <button className="action">Export PDF</button>
+              <button className="action">View Today's Log</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
