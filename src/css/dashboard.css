@@ -3,12 +3,12 @@
   min-height: 100vh;
   background-color: #f8fafc;
   display: flex;
+  position: fixed;
 }
 /* ===== DASHBOARD CONTAINER ===== */
 .dashboard-container {
   position: fixed;
   top: 0;
-  left: 0;
   bottom: 0;
   width: 300px;
   max-width: 20%;
@@ -17,7 +17,7 @@
   border-right: 1px solid #e5e7eb;
   z-index: 10;
 }
-.header {
+.dashboard-page .dash-header {
   width: 100%;
   height: 100px;
   background-color: #fff;
@@ -55,11 +55,11 @@
   top: 0px;
   left: 0px;
 }
-.title-container h2 {
+.dashboard-container .title-container h2 {
   position: absolute;
   top: 100px;
   left: 0px;
-  font-size: 22px;
+  font-size: 18px;
   font-family: "Inter", sans-serif;
   color: #6b7280;
   font-weight: bold;
@@ -81,7 +81,7 @@
   gap: 10px; /* spacing between options */
   width: 100%;
   max-width: 300px;
-  margin-top: 200px;
+  margin-top: 160px;
   font-size: large;
   font-weight: bold;
 }
@@ -117,3 +117,101 @@
   right: 15px;
   width: 25px;
 }
+.dashboard-container .dash-options .logs {
+  position: relative;
+  left: 5px;
+}
+.header-container {
+  width: 1130px;
+  height: 100px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1pt solid #e5e7eb;
+  position: absolute;
+  top: 120px;
+  left: 360px;
+  padding-top: 20px;
+  padding-left: 20px;
+}
+.header-title {
+  font-size: 30px;
+  font-family: "Arimo", sans-serif;
+  font-weight: normal;
+  margin-top: 10px;
+}
+.clock-icon {
+  width: 20px;
+  height: auto;
+  position: absolute;
+  left: 20px;
+  top: 70px;
+}
+.datetime-single {
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #4a5565;
+  font-family: "Arimo", sans-serif;
+  position: relative;
+  top: 15px;
+  left: 30px;
+}
+.quick-actions {
+  width: 1150px;
+  height: 150px;
+  border-radius: 10px;
+  border: 1pt solid #e5e7eb;
+  background-color: white;
+  position: absolute;
+  top: 250px;
+  left: 360px;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+}
+.actions-items {
+  display: flex;
+  gap: 10px;
+
+}
+
+.action {
+  width: 250px;
+  height: 50px;
+  border-radius: 10px;
+  font-family: 'Arimo', sans-serif;
+}
+.actions-items .action:nth-child(1) {
+  background-color: #eff6ff;
+  border: 1pt solid #BEDBFF;
+  color: #1C398E;
+}
+.actions-items .action:nth-child(1):hover {
+  background-color: #a6bcfd;
+  border: 1pt solid black;
+  cursor: pointer;
+}
+.action .add {
+  font-size: 14px;
+}
+.actions-items .action:nth-child(2) {
+  background-color: #F9FAFB;
+  border: 1pt solid #E5E7EB;
+  color: #101828;
+}
+.actions-items .action:nth-child(2):hover {
+  background-color: rgb(153, 153, 153);
+  border: 1pt solid black;
+  cursor: pointer;
+}
+.actions-items .action:nth-child(3) {
+  background-color: #FAF5FF;
+  border: 1pt solid #E9D4FF;
+  color: #161C8B; 
+}
+.actions-items .action:nth-child(3):hover {
+  background-color: #ddbbff;
+  border: 1pt solid black;
+  cursor: pointer;
+}
+

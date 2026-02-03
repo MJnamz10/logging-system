@@ -2,7 +2,9 @@
   width: 100%;
   min-height: 100vh;
   background-color: #f8fafc;
+  background-color: #f8fafc;
   display: flex;
+  position: fixed;
 }
 /* ===== DASHBOARD CONTAINER ===== */
 .dashboard-container {
@@ -17,7 +19,7 @@
   border-right: 1px solid #e5e7eb;
   z-index: 10;
 }
-.header {
+.logs-page .logs-header {
   width: 100%;
   height: 100px;
   background-color: #fff;

@@ -183,7 +183,7 @@ function Logs() {
 
   return (
     <div className="logs-page">
-      <div className="header"></div>
+      <div className="logs-header"></div>
       <div className="dashboard-container">
         <div className="title-container">
           <img src={logo} alt="CAAP Logo" className="logo" />
@@ -207,7 +207,7 @@ function Logs() {
             onClick={() => navigate("/logs")}
           >
             <img src={log} alt="icon" className="dash-icon" />
-            Logs
+            <h className="logs">Logs</h>
           </div>
         </div>
       </div>
