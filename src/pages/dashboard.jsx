@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/CAAP_logo.png";
+import logo from "../assets/CAAP_Logo.png";
 import home from "../assets/home.png";
 import log from "../assets/Mask group.png";
 import clock from "../assets/clock-bold.svg";

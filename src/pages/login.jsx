@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/CAAP_logo.png";
+import logo from "../assets/CAAP_Logo.png";
 import "../css/login.css";
 
 function Login() {
