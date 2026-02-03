@@ -1,16 +1,16 @@
 import React from "react";
 import logo from "../assets/CAAP_logo.png";
+import "../css/logs.css";
 import home from "../assets/home.png";
 import log from "../assets/Mask group.png";
-import "../css/dashboard.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function Dashboard() {
+function Logs() {
   const location = useLocation();
   const navigate = useNavigate();
 
   return (
-    <div className="dashboard-page">
+    <div className="logs-page">
       <div className="header"></div>
       <div className="dashboard-container">
         <div className="title-container">
@@ -18,6 +18,7 @@ function Dashboard() {
           <h1>Logging System</h1>
           <h2>MENU</h2>
         </div>
+
         <div className="dash-options">
           <div
             className={
@@ -25,7 +26,7 @@ function Dashboard() {
             }
             onClick={() => navigate("/dashboard")}
           >
-            <img src={home} alt="icon" className="dash-icon1" />
+            <img src={home} alt="icon" className="dash-icon" />
             Dashboard
           </div>
 
@@ -42,4 +43,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Logs;

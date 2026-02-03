@@ -1,4 +1,4 @@
-.dashboard-page {
+.logs-page {
   width: 100%;
   min-height: 100vh;
   background-color: white;
@@ -58,9 +58,9 @@
   top: 100px;
   left: 0px;
   font-size: 22px;
-  font-family: "Inter", sans-serif;
   color: #6b7280;
   font-weight: bold;
+  font-family: 'Inter', sans-serif;
 }
 .dash-options {
   display: flex;
@@ -74,33 +74,9 @@
   font-weight: bold;
 }
 
-.dashboard-container .dash-options .item,
-.dashboard-container .dash-options .active-item {
+.dash-options .item,
+.dash-options .active-item {
   display: flex;
-  align-items: left; /* vertical center text */
-  justify-content: left; /* horizontal center text */
-  padding-left: 60px;
-  height: 60px; /* option height */
-  background-color: white;
-  border-radius: 8px;
-  font-family: "Inter", sans-serif;
-  cursor: pointer;
-}
-.dash-options .item:hover {
-  background-color: #efefef;
-}
-
-.dashboard-container .dash-options .active-item {
-  background-color: #eff6ff;
-  color: #4b5563;
-}
-.dashboard-container .dash-options .dash-icon {
-  position: relative;
-  right: 10px;
-  width: 20px;
-}
-.dashboard-container .dash-options .dash-icon1 {
-  position: relative;
-  right: 15px;
-  width: 25px;
+  align-items: center; /* vertical center text */
+  justify-content: center; /* horizontal center text */
 }

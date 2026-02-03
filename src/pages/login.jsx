@@ -44,34 +44,36 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <img src={logo} alt="CAAP Logo" className="logo" />
-      <div className="h1">CIVIL AVIATION AUTHORITY OF THE PHILIPPINES</div>
-      <h3>Air Navigation Service</h3>
-      <p>Logging System</p>
-      <p1>Sign in to access the dashboard</p1>
+    <div className="login-page">
+      <div className="login-container">
+        <img src={logo} alt="CAAP Logo" className="logo" />
+        <div className="h1">CIVIL AVIATION AUTHORITY OF THE PHILIPPINES</div>
+        <h3>Air Navigation Service</h3>
+        <p>Logging System</p>
+        <p1>Sign in to access the dashboard</p1>
 
-      <p className="text1">Username</p>
-      <input
-        className="email"
-        type="email"
-        placeholder="Enter your Username"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        onKeyDown={handleKeyDown} // ← Enter triggers login
-      />
+        <p className="text1">Username</p>
+        <input
+          className="email"
+          type="email"
+          placeholder="Enter your Username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown} // ← Enter triggers login
+        />
 
-      <p className="text2">Password</p>
-      <input
-        className="password"
-        type="password"
-        placeholder="Enter your Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        onKeyDown={handleKeyDown} // ← Enter triggers login
-      />
+        <p className="text2">Password</p>
+        <input
+          className="password"
+          type="password"
+          placeholder="Enter your Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown} // ← Enter triggers login
+        />
 
-      <button onClick={handleLogin}>Sign In</button>
+        <button onClick={handleLogin}>Sign In</button>
+      </div>
     </div>
   );
 }
