@@ -1,10 +1,8 @@
 .logs-page {
   width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc;
-  background-color: #f8fafc;
+  background-color: white;
   display: flex;
-  position: fixed;
 }
 /* ===== DASHBOARD CONTAINER ===== */
 .dashboard-container {
@@ -16,19 +14,17 @@
   max-width: 20%;
   padding: 20px;
   background-color: #fff;
-  border-right: 1px solid #e5e7eb;
-  z-index: 10;
+  border: 1px solid #e5e7eb;
 }
-.logs-page .logs-header {
+.header {
   width: 100%;
   height: 100px;
   background-color: #fff;
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   color: white;
   border-bottom: solid 1px #e5e7eb;
-  z-index: 5;
 }
 .title-container {
   position: absolute;
@@ -66,21 +62,11 @@
   font-weight: bold;
   font-family: 'Inter', sans-serif;
 }
-
-.sidebar-divider {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background-color: #e5e7eb;
-}
-
 .dash-options {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
+  flex-direction: column; /* stack items vertically */
+  align-items: stretch; /* items fill container width */
+  gap: 10px; /* spacing between options */
   width: 100%;
   max-width: 300px;
   margin-top: 200px;
