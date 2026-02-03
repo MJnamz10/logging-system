@@ -159,7 +159,9 @@
 .actions-items {
   display: flex;
   gap: 10px;
+
 }
+
 .action {
   width: 250px;
   height: 50px;
@@ -171,6 +173,11 @@
   border: 1pt solid #BEDBFF;
   color: #1C398E;
 }
+.actions-items .action:nth-child(1):hover {
+  background-color: #a6bcfd;
+  border: 1pt solid black;
+  cursor: pointer;
+}
 .action .add {
   font-size: 14px;
 }
@@ -179,9 +186,19 @@
   border: 1pt solid #E5E7EB;
   color: #101828;
 }
+.actions-items .action:nth-child(2):hover {
+  background-color: rgb(153, 153, 153);
+  border: 1pt solid black;
+  cursor: pointer;
+}
 .actions-items .action:nth-child(3) {
   background-color: #FAF5FF;
   border: 1pt solid #E9D4FF;
   color: #161C8B; 
+}
+.actions-items .action:nth-child(3):hover {
+  background-color: #ddbbff;
+  border: 1pt solid black;
+  cursor: pointer;
 }
 
