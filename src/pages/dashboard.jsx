@@ -3,6 +3,8 @@ import logo from "../assets/CAAP_Logo.png";
 import home from "../assets/home.png";
 import log from "../assets/Mask group.png";
 import clock from "../assets/clock-bold.svg";
+import add from "../assets/add.png";
+import exp from "../assets/export.png";
 import "../css/dashboard.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -75,8 +77,18 @@ function Dashboard() {
             <div className="actions-items">
               <button className="action">
                 <p className="add">Add Log Entry</p>
-                <p className="record">Record a new event or note</p></button>
-              <button className="action">Export PDF</button>
+                <p className="record">Record a new event or note</p>
+                <div className="add-container">
+                  <img src={add} alt="add-icon" className="add-icon" />
+                </div>
+                <div className="export-container">
+                  <img src={exp} atl="export-icon" className="export-icon" />
+                </div>
+              </button>
+              <button className="action">
+                <p className="export-pdf">Export PDF</p>
+                <p className="download-log">Download log as PDF report</p>
+              </button>
               <button className="action">View Today's Log</button>
             </div>
           </div>

@@ -154,18 +154,6 @@ function Logs() {
       safety: 2,
       lastUpdated: "1:16 PM",
     },
-    {
-      id: 4,
-      date: "Jan 28, 2026",
-      displayDate: "Jan 28, 2026",
-      dayName: "Wednesday",
-      status: "Open",
-      entries: 5,
-      incidents: 0,
-      maintenance: 2,
-      safety: 1,
-      lastUpdated: "2:10 PM",
-    }
   ];
 
   const filteredLogs = logsData.filter(log => {

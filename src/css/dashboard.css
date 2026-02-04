@@ -172,19 +172,19 @@
 .actions-items {
   display: flex;
   gap: 10px;
-
 }
 
 .action {
   width: 250px;
-  height: 50px;
+  height: 60px;
   border-radius: 10px;
-  font-family: 'Arimo', sans-serif;
+  font-family: "Arimo", sans-serif;
+  justify-content: center;
 }
 .actions-items .action:nth-child(1) {
   background-color: #eff6ff;
-  border: 1pt solid #BEDBFF;
-  color: #1C398E;
+  border: 1pt solid #bedbff;
+  color: #1c398e;
 }
 .actions-items .action:nth-child(1):hover {
   background-color: #a6bcfd;
@@ -193,10 +193,62 @@
 }
 .action .add {
   font-size: 14px;
+  display: flex;
+  justify-content: left;
+  padding-left: 60px;
+  padding-top: 5px;
+  color: #1c398e;
+}
+.action .record {
+  font-size: 12px;
+  display: flex;
+  justify-content: left;
+  padding-left: 60px;
+  position: relative;
+  bottom: 30px;
+  color: #1447e6;
+}
+.action .export-pdf {
+  font-size: 14px;
+  display: flex;
+  justify-content: left;
+  padding-left: 60px;
+  padding-top: 5px;
+  color: #1c398e;
+}
+.action .add-icon {
+  position: absolute;
+  top: 8px;
+  height: 20px;
+  right: 7px;
+}
+.action .export-icon {
+  position: absolute;
+  top: 8px;
+  height: 20px;
+  right: 7px;
+}
+.action .add-container {
+  background-color: #2b7fff;
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  position: relative;
+  bottom: 83px;
+  left: 8px;
+}
+.action .export-container {
+  background-color: #6A7282;
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  position: absolute;
+  bottom: 58px;
+  left: 305px;
 }
 .actions-items .action:nth-child(2) {
-  background-color: #F9FAFB;
-  border: 1pt solid #E5E7EB;
+  background-color: #f9fafb;
+  border: 1pt solid #e5e7eb;
   color: #101828;
 }
 .actions-items .action:nth-child(2):hover {
@@ -205,13 +257,12 @@
   cursor: pointer;
 }
 .actions-items .action:nth-child(3) {
-  background-color: #FAF5FF;
-  border: 1pt solid #E9D4FF;
-  color: #161C8B; 
+  background-color: #faf5ff;
+  border: 1pt solid #e9d4ff;
+  color: #161c8b;
 }
 .actions-items .action:nth-child(3):hover {
   background-color: #ddbbff;
   border: 1pt solid black;
   cursor: pointer;
 }
-

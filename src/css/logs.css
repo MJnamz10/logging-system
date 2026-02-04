@@ -126,7 +126,7 @@
 /* ===== LOGS CONTENT ===== */
 .logs-content {
   margin-left: 340px;
-  margin-top: 120px;
+  margin-top: 110px;
   padding: 20px 40px;
   width: calc(100% - 380px);
   max-width: 900px;
@@ -590,7 +590,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 40px;
+  margin-top: 25px;
 }
 
 .page-btn {
