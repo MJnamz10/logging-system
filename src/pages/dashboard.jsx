@@ -7,6 +7,7 @@ import add from "../assets/add.png";
 import exp from "../assets/export.png";
 import view from "../assets/view.png";
 import "../css/dashboard.css";
+import AddLogEntryModal from "./AddLogEntryModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -15,6 +16,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const [dateTime, setDateTime] = useState(new Date());
+  const [showAddLog, setShowAddLog] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -77,7 +79,7 @@ function Dashboard() {
           <div className="quick-actions">
             <h className="quick-text">Quick Actions</h>
             <div className="actions-items">
-              <button className="action">
+              <button className="action" onClick={() => setShowAddLog(true)}>
                 <p className="action-text1">Add Log Entry</p>
                 <p className="action-text2">Record a new event or note</p>
                 <div className="add-container">
@@ -105,6 +107,13 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      <AddLogEntryModal
+        isOpen={showAddLog}
+        onClose={() => setShowAddLog(false)}
+        onSave={(entry) => {
+          console.log("New log entry:", entry);
+        }}
+      />
     </div>
   );
 }

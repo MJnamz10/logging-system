@@ -16,5 +16,14 @@ db.run(`
     role TEXT
   )
 `);
+db.run(`
+  CREATE TABLE IF NOT EXISTS logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    facility TEXT NOT NULL,
+    initials TEXT NOT NULL,
+    remarks TEXT NOT NULL,
+    timestamp TEXT NOT NULL
+  )
+`);
 
 module.exports = db;
