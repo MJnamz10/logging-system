@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/addLogModal.css";
-
+import add from "../assets/add.png";
 function AddLogEntryModal({ isOpen, onClose, onSave }) {
   const [facility, setFacility] = useState("");
   const [initials, setInitials] = useState("");
@@ -38,6 +38,9 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
             <h3>Add Log Entry</h3>
             <p>Record a new event, incident, or note</p>
           </div>
+          <div className="add-icon-container">
+            <img src={add} alt="add-icon" className="add-icon" />
+          </div>
           <button className="close-btn" onClick={onClose}>
             ✕
           </button>
@@ -50,6 +53,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
               <label>Facility *</label>
               <input
                 required
+                placeholder="e.g. LAGUINDINGAN "
                 value={facility}
                 onChange={(e) => setFacility(e.target.value)}
               />
@@ -70,7 +74,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
             <label>Entry Remarks *</label>
             <textarea
               required
-              rows="4"
+              rows="10"
               placeholder="Describe the event, incident, or note in detail..."
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
@@ -87,8 +91,10 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
           </div>
 
           <div className="note">
-            <strong>Note:</strong> All log entries are timestamped automatically.
-            Please ensure all required information is accurate before submitting.
+            <strong>Note:</strong><br /> 
+              All log entries are timestamped
+              automatically. Please ensure all required information is accurate
+              before submitting.
           </div>
 
           {/* Footer */}
