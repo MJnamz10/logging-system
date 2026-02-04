@@ -83,7 +83,10 @@ function Dashboard() {
           <div className="quick-actions">
             <h className="quick-text">Quick Actions</h>
             <div className="actions-items">
-              <button className="action">
+              <button
+                className="action"
+                onClick={() => setShowAddLog(true)}
+              >
                 <p className="add">Add Log Entry</p>
                 <p className="record">Record a new event or note</p>
                 <div className="add-container">
