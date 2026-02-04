@@ -5,6 +5,7 @@ import log from "../assets/Mask group.png";
 import clock from "../assets/clock-bold.svg";
 import add from "../assets/add.png";
 import exp from "../assets/export.png";
+import view from "../assets/view.png";
 import "../css/dashboard.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -74,23 +75,33 @@ function Dashboard() {
             </div>
           </div>
           <div className="quick-actions">
+            <h className="quick-text">Quick Actions</h>
             <div className="actions-items">
               <button className="action">
-                <p className="add">Add Log Entry</p>
-                <p className="record">Record a new event or note</p>
+                <p className="action-text1">Add Log Entry</p>
+                <p className="action-text2">Record a new event or note</p>
                 <div className="add-container">
                   <img src={add} alt="add-icon" className="add-icon" />
                 </div>
+              </button>
+              <button className="action">
+                <p className="action-text1">Export PDF</p>
+                <p className="action-text2">Download log as PDF report</p>
                 <div className="export-container">
                   <img src={exp} atl="export-icon" className="export-icon" />
                 </div>
               </button>
               <button className="action">
-                <p className="export-pdf">Export PDF</p>
-                <p className="download-log">Download log as PDF report</p>
+                <p className="action-text1">View Today's Log</p>
+                <p className="action-text2">See all entries for this shift</p>
+                <div className="view-container">
+                  <img src={view} atl="view-icon" className="view-icon" />
+                </div>
               </button>
-              <button className="action">View Today's Log</button>
             </div>
+          </div>
+          <div className="entry-container">
+            <h className="entry-text">Latest Entry</h>
           </div>
         </div>
       </div>
