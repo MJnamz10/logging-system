@@ -86,6 +86,33 @@ app.post("/logs", (req, res) => {
   });
 });
 
+/* =========================
+   GET LATEST LOG ENTRY
+========================= */
+app.get("/logs/latest", (req, res) => {
+  const sql = `
+    SELECT *
+    FROM logs
+    ORDER BY timestamp DESC
+    LIMIT 1
+  `;
+
+  db.get(sql, [], (err, row) => {
+    if (err) {
+      console.error("Error fetching latest log:", err.message);
+      return res.status(500).json({ message: "Failed to fetch latest log" });
+    }
+
+    // If no logs yet
+    if (!row) {
+      return res.json(null);
+    }
+
+    res.json(row);
+  });
+});
+
+
 app.listen(5000, () =>
   console.log("✅ Server running on http://localhost:5000")
 );

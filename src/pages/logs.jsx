@@ -115,7 +115,7 @@ function Logs() {
   };
 
   const nextMonthDate = new Date(currentViewDate);
-  nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+  nextMonthDate.setMonth(nextMonthDate. getMonth() + 1);
 
   const logsData = [
     {

@@ -17,6 +17,27 @@ function Dashboard() {
 
   const [dateTime, setDateTime] = useState(new Date());
   const [showAddLog, setShowAddLog] = useState(false);
+  const [latestLogs, setLatestLogs] = useState([]); // store multiple logs
+
+  useEffect(() => {
+    const fetchLatestLogs = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/logs/latest");
+        const data = await response.json();
+
+        // if backend returns only 1, wrap in array for consistency
+        const logsArray = data ? [data] : [];
+        setLatestLogs(logsArray);
+      } catch (error) {
+        console.error("Failed to fetch latest logs:", error);
+      }
+    };
+
+    fetchLatestLogs();
+
+    const interval = setInterval(fetchLatestLogs, 30000); // refresh every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -104,6 +125,31 @@ function Dashboard() {
           </div>
           <div className="entry-container">
             <h className="entry-text">Latest Entry</h>
+
+            {latestLogs.length > 0 ? (
+              latestLogs.map((log, index) => (
+                <div key={index} className="latest-entry-card">
+                  <div className="entry-left">
+                    <div className="entry-icon">✓</div>
+                    <div className="entry-content">
+                      <p className="entry-title">
+                        {log.facility} {log.initials}
+                      </p>
+                      <p className="entry-remarks">{log.remarks}</p>
+                    </div>
+                  </div>
+                  <div className="entry-time">
+                    {new Date(log.timestamp).toLocaleTimeString("en-GB", {
+                      timeZone: "UTC",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="no-entry">No latest entries</p>
+            )}
           </div>
         </div>
       </div>
@@ -112,6 +158,7 @@ function Dashboard() {
         onClose={() => setShowAddLog(false)}
         onSave={(entry) => {
           console.log("New log entry:", entry);
+          setLatestLogs((prev) => [entry, ...prev].slice(0, 3)); // Update the dashboard immediately
         }}
       />
     </div>

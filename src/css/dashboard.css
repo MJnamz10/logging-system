@@ -285,9 +285,8 @@
   position: relative;
   top: 90px;
   left: 340px;
-  
 }
-.entry-text{
+.entry-text {
   font-size: 18px;
   font-family: "Arimo", sans-serif;
   font-weight: normal;
@@ -590,15 +589,18 @@
   position: relative;
   top: 90px;
   left: 340px;
-  
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-.entry-text{
+.entry-text {
   font-size: 18px;
   font-family: "Arimo", sans-serif;
   font-weight: normal;
   margin-left: 30px;
   position: relative;
   top: 20px;
+  margin-bottom: 20px; /* ← add this to push the cards down */
 }
 .quick-text {
   position: relative;
@@ -606,4 +608,62 @@
   font-size: 18px;
   font-family: "Arimo", sans-serif;
   font-weight: normal;
+}
+.latest-entry-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px;
+  margin-left: 25px;
+  background: linear-gradient(90deg, #eef6ff, #e6f1ff);
+  border: 2px solid #9fc3ff;
+  border-radius: 12px;
+  width: 1050px;
+}
+
+.entry-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.entry-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #1e6bff;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.entry-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-title {
+  font-weight: 600;
+  color: #0b3ea8;
+  margin: 0;
+}
+
+.entry-remarks {
+  font-size: 14px;
+  color: #1f4bb8;
+  margin: 4px 0 0 0;
+}
+
+.entry-time {
+  font-size: 14px;
+  color: #1e6bff;
+  font-weight: 500;
+}
+
+.no-entry {
+  margin-top: 12px;
+  color: #888;
 }
