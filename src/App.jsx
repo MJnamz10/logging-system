@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/login.jsx";
 import Dashboard from "./pages/dashboard.jsx";
+import LogEntries from "./pages/logEntries.jsx";
 import Logs from "./pages/logs.jsx";
+
 
 function App() {
   const [latestLogs, setLatestLogs] = useState([]); // for Dashboard

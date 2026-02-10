@@ -13,10 +13,16 @@
   },
   "dependencies": {
     "firebase": "^12.8.0",
+    "lucide-react": "^0.563.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+<<<<<<< HEAD
     "react-router-dom": "^6.14.1",
     "react-time-picker": "^8.0.2"
+=======
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^6.14.1"
+>>>>>>> ace5c7bbb7b398225aee506e8b3c565dc72a01a4
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

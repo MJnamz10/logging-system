@@ -93,13 +93,8 @@ function Logs() {
     setCurrentViewDate(newDate);
   };
 
-  const getDaysInMonth = (year, month) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (year, month) => {
-    return new Date(year, month, 1).getDay();
-  };
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
   const renderCalendar = (date) => {
     const year = date.getFullYear();
@@ -108,9 +103,7 @@ function Logs() {
     const firstDay = getFirstDayOfMonth(year, month);
     const days = [];
 
-    for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="day empty"></div>);
-    }
+    for (let i = 0; i < firstDay; i++) days.push(<div key={`empty-${i}`} className="day empty"></div>);
 
     for (let d = 1; d <= daysInMonth; d++) {
       days.push(
@@ -158,6 +151,7 @@ function Logs() {
 
   const nextMonthDate = new Date(currentViewDate);
   nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+  nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
 
   const [logsData, setLogsData] = useState([]);
 
@@ -186,7 +180,7 @@ function Logs() {
 
   return (
     <div className="logs-page">
-      <div className="logs-header"></div>
+      {/* Sidebar */}
       <div className="dashboard-container">
         <div className="title-container">
           <img src={logo} alt="CAAP Logo" className="logo" />
@@ -195,27 +189,18 @@ function Logs() {
         </div>
         <div className="sidebar-divider"></div>
         <div className="dash-options">
-          <div
-            className={
-              location.pathname === "/dashboard" ? "active-item" : "item"
-            }
-            onClick={() => navigate("/dashboard")}
-          >
-            <img src={home} alt="icon" className="dash-icon1" />
-            Dashboard
+          <div className={location.pathname === "/dashboard" ? "active-item" : "item"} onClick={() => navigate("/dashboard")}>
+            <img src={home} alt="icon" className="dash-icon1" /> Dashboard
           </div>
-
-          <div
-            className={location.pathname === "/logs" ? "active-item" : "item"}
-            onClick={() => navigate("/logs")}
-          >
-            <img src={log} alt="icon" className="dash-icon" />
-            <h className="logs">Logs</h>
+          <div className={location.pathname === "/logs" ? "active-item" : "item"} onClick={() => navigate("/logs")}>
+            <img src={log} alt="icon" className="dash-icon" /> Logs
           </div>
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="logs-content">
+        {/* Search Bar */}
         <div className="logs-search-bar">
           <div className="search-input-wrapper">
             <svg
@@ -228,12 +213,9 @@ function Logs() {
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
-            <input
-              type="text"
-              placeholder="Search by date or keywords..."
-              className="search-input"
-            />
+            <input type="text" placeholder="Search by date or keywords..." className="search-input" />
           </div>
+
           <div className="date-picker-container">
             <div
               className="date-picker"
@@ -330,6 +312,7 @@ function Logs() {
 
         <div className="logs-count">Showing {filteredLogs.length} logs</div>
 
+        {/* Logs List */}
         <div className="logs-list">
           {filteredLogs.map((logItem, index) => {
             const logDate = new Date(logItem.timestamp);
@@ -402,6 +385,7 @@ function Logs() {
           })}
         </div>
 
+        {/* Pagination */}
         <div className="pagination">
           <button className="page-btn nav-btn" disabled>
             <svg
@@ -413,14 +397,8 @@ function Logs() {
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </button>
-          {[1, 2, 3, 4, 5].map((page) => (
-            <button
-              key={page}
-              className={`page-btn ${currentPage === page ? "active" : ""}`}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </button>
+          {[1,2,3,4,5].map((page) => (
+            <button key={page} className={`page-btn ${currentPage === page ? "active" : ""}`} onClick={() => setCurrentPage(page)}>{page}</button>
           ))}
           <button className="page-btn nav-btn">
             <svg
@@ -439,3 +417,4 @@ function Logs() {
 }
 
 export default Logs;
+
