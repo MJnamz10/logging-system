@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/login.jsx";
 import Dashboard from "./pages/dashboard.jsx";
+import LogEntries from "./pages/logEntries.jsx";
 import Logs from "./pages/logs.jsx";
+
 
 function App() {
   return (
@@ -9,7 +11,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/logs" element={<Logs />} />
+        <Route path="/logs" element={<Logs />} />        
+        <Route path="/logEntries" element={<LogEntries />} />
       </Routes>
     </Router>
   );

@@ -12,7 +12,7 @@ function Logs() {
   const [searchDate, setSearchDate] = useState("Jan 28 - Jan 29, 2026");
   const [currentPage, setCurrentPage] = useState(1);
   const [showPicker, setShowPicker] = useState(false);
-  const [currentViewDate, setCurrentViewDate] = useState(new Date(2026, 0, 1)); // January 2026
+  const [currentViewDate, setCurrentViewDate] = useState(new Date(2026, 0, 1));
   const [selectedRange, setSelectedRange] = useState({ 
     start: { day: 28, month: 0, year: 2026 }, 
     end: { day: 29, month: 0, year: 2026 } 
@@ -30,7 +30,6 @@ function Logs() {
       setSelectedRange({ start: { day, month, year }, end: null });
     } else {
       const startDate = new Date(selectedRange.start.year, selectedRange.start.month, selectedRange.start.day);
-      
       if (clickedDate < startDate) {
         setSelectedRange({ start: { day, month, year }, end: null });
       } else {
@@ -47,7 +46,6 @@ function Logs() {
       const startDate = new Date(selectedRange.start.year, selectedRange.start.month, selectedRange.start.day);
       const endDate = new Date(selectedRange.end.year, selectedRange.end.month, selectedRange.end.day);
       const currentDate = new Date(year, month, day);
-      
       if (currentDate > startDate && currentDate < endDate) return 'in-range-bg';
     }
     return '';
@@ -59,13 +57,8 @@ function Logs() {
     setCurrentViewDate(newDate);
   };
 
-  const getDaysInMonth = (year, month) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (year, month) => {
-    return new Date(year, month, 1).getDay();
-  };
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
   const renderCalendar = (date) => {
     const year = date.getFullYear();
@@ -74,9 +67,7 @@ function Logs() {
     const firstDay = getFirstDayOfMonth(year, month);
     const days = [];
 
-    for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="day empty"></div>);
-    }
+    for (let i = 0; i < firstDay; i++) days.push(<div key={`empty-${i}`} className="day empty"></div>);
 
     for (let d = 1; d <= daysInMonth; d++) {
       days.push(
@@ -95,9 +86,7 @@ function Logs() {
         <div className="weekday-header">
           <span>SU</span><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span>
         </div>
-        <div className="days-grid">
-          {days}
-        </div>
+        <div className="days-grid">{days}</div>
       </div>
     );
   };
@@ -115,53 +104,17 @@ function Logs() {
   };
 
   const nextMonthDate = new Date(currentViewDate);
-  nextMonthDate.setMonth(nextMonthDate. getMonth() + 1);
+  nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
 
   const logsData = [
-    {
-      id: 1,
-      date: "Feb 3, 2026",
-      displayDate: "Today",
-      dayName: "Wednesday",
-      status: "Open",
-      entries: 8,
-      incidents: 1,
-      maintenance: 4,
-      safety: 2,
-      lastUpdated: "1:01 PM",
-    },
-    {
-      id: 2,
-      date: "Feb 2, 2026",
-      displayDate: "Yesterday",
-      dayName: "Tuesday",
-      status: "Closed",
-      entries: 7,
-      incidents: 0,
-      maintenance: 4,
-      safety: 2,
-      lastUpdated: "1:16 PM",
-    },
-    {
-      id: 3,
-      date: "Jan 26, 2026",
-      displayDate: "Jan 26, 2026",
-      dayName: "Monday",
-      status: "Closed",
-      entries: 7,
-      incidents: 0,
-      maintenance: 4,
-      safety: 2,
-      lastUpdated: "1:16 PM",
-    },
+    { id: 1, date: "Feb 3, 2026", displayDate: "Today", dayName: "Wednesday", status: "Open", entries: 8, incidents: 1, maintenance: 4, safety: 2, lastUpdated: "1:01 PM" },
+    { id: 2, date: "Feb 2, 2026", displayDate: "Yesterday", dayName: "Tuesday", status: "Closed", entries: 7, incidents: 0, maintenance: 4, safety: 2, lastUpdated: "1:16 PM" },
+    { id: 3, date: "Jan 26, 2026", displayDate: "Jan 26, 2026", dayName: "Monday", status: "Closed", entries: 7, incidents: 0, maintenance: 4, safety: 2, lastUpdated: "1:16 PM" },
   ];
 
   const filteredLogs = logsData.filter(log => {
     if (statusFilter !== "all" && log.status.toLowerCase() !== statusFilter) return false;
-    
-    // For simplicity, if no specific filter applied besides UI state, showing all or filtered by status
-    // In a real app, we'd parse log.date and compare with selectedRange
-    return true; 
+    return true;
   });
 
   const clearDate = () => {
@@ -171,7 +124,7 @@ function Logs() {
 
   return (
     <div className="logs-page">
-      <div className="logs-header"></div>
+      {/* Sidebar */}
       <div className="dashboard-container">
         <div className="title-container">
           <img src={logo} alt="CAAP Logo" className="logo" />
@@ -180,39 +133,27 @@ function Logs() {
         </div>
         <div className="sidebar-divider"></div>
         <div className="dash-options">
-          <div
-            className={
-              location.pathname === "/dashboard" ? "active-item" : "item"
-            }
-            onClick={() => navigate("/dashboard")}
-          >
-            <img src={home} alt="icon" className="dash-icon1" />
-            Dashboard
+          <div className={location.pathname === "/dashboard" ? "active-item" : "item"} onClick={() => navigate("/dashboard")}>
+            <img src={home} alt="icon" className="dash-icon1" /> Dashboard
           </div>
-
-          <div
-            className={location.pathname === "/logs" ? "active-item" : "item"}
-            onClick={() => navigate("/logs")}
-          >
-            <img src={log} alt="icon" className="dash-icon" />
-            <h className="logs">Logs</h>
+          <div className={location.pathname === "/logs" ? "active-item" : "item"} onClick={() => navigate("/logs")}>
+            <img src={log} alt="icon" className="dash-icon" /> Logs
           </div>
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="logs-content">
+        {/* Search Bar */}
         <div className="logs-search-bar">
           <div className="search-input-wrapper">
             <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
-            <input
-              type="text"
-              placeholder="Search by date or keywords..."
-              className="search-input"
-            />
+            <input type="text" placeholder="Search by date or keywords..." className="search-input" />
           </div>
+
           <div className="date-picker-container">
             <div className="date-picker" onClick={() => setShowPicker(!showPicker)}>
               <svg className="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -240,62 +181,53 @@ function Logs() {
                 </div>
                 <div className="picker-months-nav">
                   <button className="nav-arrow" onClick={() => changeMonth(-1)}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
                   </button>
                   <div className="month-labels">
                     <span className="month-label">{months[currentViewDate.getMonth()]} {currentViewDate.getFullYear()}</span>
                     <span className="month-label">{months[nextMonthDate.getMonth()]} {nextMonthDate.getFullYear()}</span>
                   </div>
                   <button className="nav-arrow" onClick={() => changeMonth(1)}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </button>
                 </div>
-                <div className="picker-calendars">
-                  {renderCalendar(currentViewDate)}
-                  {renderCalendar(nextMonthDate)}
-                </div>
+                <div className="picker-calendars">{renderCalendar(currentViewDate)}{renderCalendar(nextMonthDate)}</div>
                 <button className="apply-filter-btn" onClick={applyFilter}>Apply Filter</button>
               </div>
             )}
           </div>
         </div>
 
+        {/* Filters */}
         <div className="logs-filters">
           <div className="filter-group">
             <svg className="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
             </svg>
             <span className="filter-label">Status:</span>
-            <button
-              className={`filter-btn ${statusFilter === "all" ? "active" : ""}`}
-              onClick={() => setStatusFilter("all")}
-            >
-              All
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === "open" ? "active" : ""}`}
-              onClick={() => setStatusFilter("open")}
-            >
-              Open
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === "closed" ? "active" : ""}`}
-              onClick={() => setStatusFilter("closed")}
-            >
-              Closed
-            </button>
+            {["all", "open", "closed"].map((status) => (
+              <button
+                key={status}
+                className={`filter-btn ${statusFilter === status ? "active" : ""}`}
+                onClick={() => setStatusFilter(status)}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="logs-count">Showing 8 logs</div>
+        <div className="logs-count">Showing {filteredLogs.length} logs</div>
 
+        {/* Logs List */}
         <div className="logs-list">
           {filteredLogs.map((logItem) => (
-            <div key={logItem.id} className="log-group">
+            <div 
+              key={logItem.id} 
+              className="log-group" 
+              onClick={() => navigate("/logEntries", { state: { logId: logItem.id } })}
+              style={{ cursor: "pointer" }}
+            >
               <div className="log-date-header">
                 <svg className="calendar-small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -311,16 +243,6 @@ function Logs() {
               <div className="log-card">
                 <div className="log-card-content">
                   <div className={`status-badge ${logItem.status.toLowerCase()}`}>
-                    {logItem.status === "Open" ? (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                    ) : (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                    )}
                     {logItem.status}
                   </div>
                   <div className="log-stats">
@@ -333,42 +255,24 @@ function Logs() {
                     <span>{logItem.safety} safety</span>
                   </div>
                   <div className="log-updated">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
                     Last updated {logItem.lastUpdated}
                   </div>
-                </div>
-                <div className="log-card-arrow">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
+        {/* Pagination */}
         <div className="pagination">
           <button className="page-btn nav-btn" disabled>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </button>
-          {[1, 2, 3, 4, 5].map((page) => (
-            <button
-              key={page}
-              className={`page-btn ${currentPage === page ? "active" : ""}`}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </button>
+          {[1,2,3,4,5].map((page) => (
+            <button key={page} className={`page-btn ${currentPage === page ? "active" : ""}`} onClick={() => setCurrentPage(page)}>{page}</button>
           ))}
           <button className="page-btn nav-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </button>
         </div>
       </div>
@@ -377,3 +281,4 @@ function Logs() {
 }
 
 export default Logs;
+
