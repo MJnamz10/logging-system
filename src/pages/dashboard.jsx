@@ -36,6 +36,35 @@ function Dashboard({ latestLogs, setLatestLogs }) {
     return () => clearInterval(timer);
   }, []);
 
+const handleExportPdf = async () => {
+  try {
+    const response = await fetch("http://localhost:5000/logs/export/pdf");
+
+    if (!response.ok) {
+      const errText = await response.text(); // might be JSON or HTML
+      console.error("Export failed:", response.status, errText);
+      alert(`Failed to export PDF (HTTP ${response.status})`);
+      return;
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `logs-${new Date().toISOString().slice(0, 10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Export error:", err);
+    alert("Failed to export PDF");
+  }
+};
+
+
   // SAVE LOG
   const handleSaveLog = async (entry) => {
     const res = await fetch("http://localhost:5000/logs", {
@@ -128,8 +157,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                   <img src={add} alt="add-icon" className="add-icon" />
                 </div>
               </button>
-
-              <button className="action">
+              <button className="action" onClick={handleExportPdf}>
                 <p className="action-text1">Export PDF</p>
                 <p className="action-text2">Download log as PDF report</p>
                 <div className="export-container">
