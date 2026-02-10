@@ -58,19 +58,19 @@ app.post("/login", (req, res) => {
    ADD LOG ENTRY
 ========================= */
 app.post("/logs", (req, res) => {
-  const { facility, initials, remarks } = req.body;
+  const { timeUTC, initials, remarks } = req.body;
   const timestamp = new Date().toISOString();
 
-  if (!facility || !initials || !remarks) {
+  if (!timeUTC || !initials || !remarks) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   const sql = `
-    INSERT INTO logs (facility, initials, remarks, timestamp)
+    INSERT INTO logs (timeUTC, initials, remarks, timestamp)
     VALUES (?, ?, ?, ?)
   `;
 
-  db.run(sql, [facility, initials, remarks, timestamp], function (err) {
+  db.run(sql, [timeUTC, initials, remarks, timestamp], function (err) {
     if (err) {
       console.error("Error inserting log:", err.message);
       return res.status(500).json({ message: "Failed to save log entry" });
@@ -78,7 +78,7 @@ app.post("/logs", (req, res) => {
 
     res.json({
       id: this.lastID,
-      facility,
+      timeUTC,
       initials,
       remarks,
       timestamp,
@@ -94,21 +94,16 @@ app.get("/logs/latest", (req, res) => {
     SELECT *
     FROM logs
     ORDER BY timestamp DESC
-    LIMIT 1
+    LIMIT 3
   `;
 
-  db.get(sql, [], (err, row) => {
+  db.all(sql, [], (err, rows) => { // use db.all instead of db.get for multiple rows
     if (err) {
-      console.error("Error fetching latest log:", err.message);
-      return res.status(500).json({ message: "Failed to fetch latest log" });
+      console.error("Error fetching latest logs:", err.message);
+      return res.status(500).json({ message: "Failed to fetch latest logs" });
     }
 
-    // If no logs yet
-    if (!row) {
-      return res.json(null);
-    }
-
-    res.json(row);
+    res.json(rows); // rows is an array of up to 3 logs
   });
 });
 

@@ -1,63 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/CAAP_Logo.png";
 import home from "../assets/home.png";
-import log from "../assets/Mask group.png";
+import logIcon from "../assets/Mask group.png";
 import clock from "../assets/clock-bold.svg";
 import add from "../assets/add.png";
 import exp from "../assets/export.png";
-import view from "../assets/view.png";
+import search from "../assets/search.png";
+import viewlogs from "../assets/viewlogs.png";
 import "../css/dashboard.css";
 import AddLogEntryModal from "./AddLogEntryModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 
-function Dashboard() {
+function Dashboard({ latestLogs, setLatestLogs }) {
   const location = useLocation();
   const navigate = useNavigate();
 
   const [dateTime, setDateTime] = useState(new Date());
   const [showAddLog, setShowAddLog] = useState(false);
-  const [latestLogs, setLatestLogs] = useState([]); // store multiple logs
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // FETCH ALL LOGS
   useEffect(() => {
-    const fetchLatestLogs = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/logs/latest");
-        const data = await response.json();
-
-        // if backend returns only 1, wrap in array for consistency
-        const logsArray = data ? [data] : [];
-        setLatestLogs(logsArray);
-      } catch (error) {
-        console.error("Failed to fetch latest logs:", error);
-      }
+    const fetchAllLogs = async () => {
+      const res = await fetch("http://localhost:5000/logs");
+      const data = await res.json();
+      setLatestLogs(data);
     };
 
-    fetchLatestLogs();
+    fetchAllLogs();
+  }, [setLatestLogs]);
 
-    const interval = setInterval(fetchLatestLogs, 30000); // refresh every 30s
-    return () => clearInterval(interval);
-  }, []);
-
+  // CLOCK
   useEffect(() => {
-    const timer = setInterval(() => {
-      setDateTime(new Date());
-    }, 1000);
-
+    const timer = setInterval(() => setDateTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // SAVE LOG
+  const handleSaveLog = async (entry) => {
+    const res = await fetch("http://localhost:5000/logs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(entry),
+    });
+
+    const savedLog = await res.json();
+    setLatestLogs((prev) => [savedLog, ...prev]);
+    setShowAddLog(false);
+  };
+
+  // FILTER LOGS
+  const filteredLogs = latestLogs.filter((log) => {
+    if (!searchTerm.trim()) return true;
+
+    return (
+      log.timeUTC.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.initials.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.remarks.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   return (
     <div className="dashboard-page">
       <div className="dash-header"></div>
+
       <div className="dashboard-container">
         <div className="title-container">
           <img src={logo} alt="CAAP Logo" className="logo" />
           <h1>Logging System</h1>
           <h2>MENU</h2>
         </div>
+
         <div className="sidebar-divider"></div>
+
         <div className="dash-options">
+          {/* SIDEBAR */}
           <div
             className={
               location.pathname === "/dashboard" ? "active-item" : "item"
@@ -72,9 +89,11 @@ function Dashboard() {
             className={location.pathname === "/logs" ? "active-item" : "item"}
             onClick={() => navigate("/logs")}
           >
-            <img src={log} alt="icon" className="dash-icon" />
+            <img src={logIcon} alt="icon" className="dash-icon" />
             <h className="logs">Logs</h>
           </div>
+
+          {/* HEADER */}
           <div className="header-container">
             <h className="header-title">Air Navigation Service</h>
 
@@ -97,6 +116,8 @@ function Dashboard() {
               </span>
             </div>
           </div>
+
+          {/* QUICK ACTIONS */}
           <div className="quick-actions">
             <h className="quick-text">Quick Actions</h>
             <div className="actions-items">
@@ -107,59 +128,91 @@ function Dashboard() {
                   <img src={add} alt="add-icon" className="add-icon" />
                 </div>
               </button>
+
               <button className="action">
                 <p className="action-text1">Export PDF</p>
                 <p className="action-text2">Download log as PDF report</p>
                 <div className="export-container">
-                  <img src={exp} atl="export-icon" className="export-icon" />
-                </div>
-              </button>
-              <button className="action">
-                <p className="action-text1">View Today's Log</p>
-                <p className="action-text2">See all entries for this shift</p>
-                <div className="view-container">
-                  <img src={view} atl="view-icon" className="view-icon" />
+                  <img src={exp} alt="export-icon" className="export-icon" />
                 </div>
               </button>
             </div>
           </div>
-          <div className="entry-container">
-            <h className="entry-text">Latest Entry</h>
 
-            {latestLogs.length > 0 ? (
-              latestLogs.map((log, index) => (
-                <div key={index} className="latest-entry-card">
-                  <div className="entry-left">
-                    <div className="entry-icon">✓</div>
-                    <div className="entry-content">
-                      <p className="entry-title">
-                        {log.facility} {log.initials}
-                      </p>
-                      <p className="entry-remarks">{log.remarks}</p>
-                    </div>
-                  </div>
-                  <div className="entry-time">
-                    {new Date(log.timestamp).toLocaleTimeString("en-GB", {
-                      timeZone: "UTC",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </div>
-                </div>
-              ))
+          {/* TABLE */}
+          <div className="entry-container">
+            <div className="table-header">
+              <h className="entry-text">
+                Log Entries
+                <span className="entry-text2">Air Navigation Force</span>
+              </h>
+              <div className="viewlogs-icon-container">
+                <img src={viewlogs} alt="icon" className="viewlogs-icon" />
+              </div>
+              <p className="entries-count">
+                {filteredLogs.length}{" "}
+              </p>
+              <p className="total">
+                TOTAL ENTRIES
+              </p>
+
+              <div className="table-controls">
+                <span>
+                  <img src={search} alt="icon" className="search-symbol" />
+                </span>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search time, initials, or remarks..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="table-container">
+            {filteredLogs.length > 0 ? (
+              <table className="logs-table">
+                <thead>
+                  <tr className="texts">
+                    <th></th>
+                    <th>Date</th>
+                    <th>Time (UTC)</th>
+                    <th>Initials</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredLogs.map((log, index) => (
+                    <tr className="texts-two" key={log.id || index}>
+                      <td>{index + 1}</td>
+                      <td>
+                        {new Date(log.timestamp).toLocaleDateString("en-US", {
+                          timeZone: "UTC",
+                          month: "numeric",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </td>
+                      <td>{log.timeUTC}</td>
+                      <td>{log.initials}</td>
+                      <td>{log.remarks}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              
             ) : (
-              <p className="no-entry">No latest entries</p>
+              <p className="no-entry">No matching log entries</p>
             )}
+            </div>
           </div>
         </div>
       </div>
+
       <AddLogEntryModal
         isOpen={showAddLog}
         onClose={() => setShowAddLog(false)}
-        onSave={(entry) => {
-          console.log("New log entry:", entry);
-          setLatestLogs((prev) => [entry, ...prev].slice(0, 3)); // Update the dashboard immediately
-        }}
+        onSave={handleSaveLog}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 
 // Create DB file (if not exists)
-const db = new sqlite3.Database("./login.db", (err) => {
+const db = new sqlite3.Database("./database.db", (err) => {
   if (err) console.error(err.message);
   else console.log("Connected to SQLite database.");
 });
@@ -19,7 +19,7 @@ db.run(`
 db.run(`
   CREATE TABLE IF NOT EXISTS logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    facility TEXT NOT NULL,
+    timeUTC TEXT NOT NULL,
     initials TEXT NOT NULL,
     remarks TEXT NOT NULL,
     timestamp TEXT NOT NULL

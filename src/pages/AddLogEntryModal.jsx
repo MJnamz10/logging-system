@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../css/addLogModal.css";
 import add from "../assets/add.png";
 function AddLogEntryModal({ isOpen, onClose, onSave }) {
-  const [facility, setFacility] = useState("");
+  const [timeUTC, setTimeUTC] = useState("");
   const [initials, setInitials] = useState("");
   const [remarks, setRemarks] = useState("");
   const [images, setImages] = useState([]);
@@ -13,7 +13,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
     e.preventDefault();
 
     const entry = {
-      facility,
+      timeUTC,
       initials,
       remarks,
       images,
@@ -23,7 +23,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
     onSave(entry);
     onClose();
 
-    setFacility("");
+    setTimeUTC("");
     setInitials("");
     setRemarks("");
     setImages([]);
@@ -50,12 +50,12 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="modal-body">
           <div className="row">
             <div className="field">
-              <label>Facility *</label>
+              <label>Time *</label>
               <input
+                type="text"
                 required
-                placeholder="e.g. LAGUINDINGAN "
-                value={facility}
-                onChange={(e) => setFacility(e.target.value)}
+                value={timeUTC}
+                onChange={(e) => setTimeUTC(e.target.value)}
               />
             </div>
 
@@ -91,10 +91,10 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
           </div>
 
           <div className="note">
-            <strong>Note:</strong><br /> 
-              All log entries are timestamped
-              automatically. Please ensure all required information is accurate
-              before submitting.
+            <strong>Note:</strong>
+            <br />
+            All log entries are timestamped automatically. Please ensure all
+            required information is accurate before submitting.
           </div>
 
           {/* Footer */}
