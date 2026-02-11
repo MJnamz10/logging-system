@@ -3,11 +3,13 @@ import logo from "../assets/CAAP_Logo.png";
 import "../css/logs.css";
 import home from "../assets/home.png";
 import log from "../assets/Mask group.png";
+import LogModal from "./logModal"; // Adjust path if needed
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Logs() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [selectedDayLogs, setSelectedDayLogs] = useState(null); // Tracks logs for the modal
   const [logsData, setLogsData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchDate, setSearchDate] = useState("");
@@ -203,23 +205,46 @@ function Logs() {
     return matchesKeyword && matchesDate;
   });
 
-  const clearDate = () => {
-    setSearchDate("");
-    setSelectedRange({ start: null, end: null });
-  };
+  // ... after filteredLogs definition ...
+
+  const groupedLogs = filteredLogs.reduce((groups, log) => {
+    const date = new Date(log.timestamp).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(log);
+    return groups;
+  }, {});
+
+  // Convert the object into an array of entries for pagination
+  const dateEntries = Object.entries(groupedLogs);
 
   // Define items per page
   const itemsPerPage = 3;
 
-  // Calculate the index range for the current page
-  const indexOfLastLog = currentPage * itemsPerPage;
-  const indexOfFirstLog = indexOfLastLog - itemsPerPage;
+  // Calculate indices for slicing the date entries
+  const indexOfLastDate = currentPage * itemsPerPage;
+  const indexOfFirstDate = indexOfLastDate - itemsPerPage;
 
-  // Slice the filtered data for display
-  const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
+  // Slice the grouped date entries for display
+  const currentDateEntries = dateEntries.slice(
+    indexOfFirstDate,
+    indexOfLastDate,
+  );
 
-  // Calculate total pages based on filtered results
-  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+  // Calculate total pages based on number of grouped days
+  const totalPages = Math.ceil(dateEntries.length / itemsPerPage);
+
+  const clearDate = () => {
+    setSearchDate("");
+    setSelectedRange({ start: null, end: null });
+  };
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -387,11 +412,11 @@ function Logs() {
         <div className="logs-count">Showing {filteredLogs.length} logs</div>
 
         <div className="logs-list">
-          {currentLogs.map((logItem, index) => {
-            const logDate = new Date(logItem.timestamp);
+          {currentDateEntries.map(([dateString, logsInDay]) => {
+            const firstLogDate = new Date(logsInDay[0].timestamp);
 
             return (
-              <div key={logItem._id || index} className="log-group">
+              <div key={dateString} className="log-group">
                 <div className="log-date-header">
                   <svg
                     className="calendar-small-icon"
@@ -413,17 +438,10 @@ function Logs() {
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
 
-                  <span className="log-date">
-                    {logDate.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    })}
-                  </span>
+                  <span className="log-date">{dateString}</span>
 
                   <span className="log-day">
-                    {logDate.toLocaleDateString("en-US", {
+                    {firstLogDate.toLocaleDateString("en-US", {
                       weekday: "long",
                       timeZone: "UTC",
                     })}
@@ -434,21 +452,44 @@ function Logs() {
 
                 <div className="log-card">
                   <div className="log-card-content">
-                    <div className="status-badge open">Open</div>
+                    <div className="status-badge open">
+                      {logsInDay.length}{" "}
+                      {logsInDay.length === 1 ? "Entry" : "Entries"}
+                    </div>
 
                     <div className="log-updated">
-                      Last updated{" "}
-                      {logDate.toLocaleTimeString("en-GB", {
-                        timeZone: "UTC",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      Last activity:{" "}
+                      {new Date(logsInDay[0].timestamp).toLocaleTimeString(
+                        "en-GB",
+                        {
+                          timeZone: "UTC",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
                     </div>
                   </div>
 
                   <div className="log-details">
-                    <strong>{logItem.initials}</strong>
-                    <p>{logItem.remarks}</p>
+                    {/* Show a summary or just the button */}
+                    <strong>Daily Log Summary</strong>
+                    <p>
+                      Activity recorded by:{" "}
+                      {[...new Set(logsInDay.map((l) => l.initials))].join(
+                        ", ",
+                      )}
+                    </p>
+                    <button
+                      className="view-table-btn"
+                      onClick={() =>
+                        setSelectedDayLogs({
+                          date: dateString,
+                          logs: logsInDay,
+                        })
+                      }
+                    >
+                      View Full Table
+                    </button>
                   </div>
                 </div>
               </div>
@@ -498,6 +539,11 @@ function Logs() {
           </button>
         </div>
       </div>
+      <LogModal
+        isOpen={!!selectedDayLogs}
+        onClose={() => setSelectedDayLogs(null)}
+        data={selectedDayLogs}
+      />
     </div>
   );
 }

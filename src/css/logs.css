@@ -64,7 +64,7 @@
   font-size: 22px;
   color: #6b7280;
   font-weight: bold;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .sidebar-divider {
@@ -162,7 +162,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 15px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: #fff;
   outline: none;
   transition: border-color 0.2s;
@@ -186,7 +186,7 @@
   background-color: #fff;
   color: #1e40af;
   font-size: 15px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
 }
 
@@ -221,7 +221,7 @@
   font-size: 18px;
   font-weight: 600;
   color: #1f2937;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .picker-clear-btn {
@@ -280,7 +280,7 @@
   font-size: 16px;
   font-weight: 700;
   color: #1f2937;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .picker-calendars {
@@ -304,7 +304,7 @@
   font-size: 13px;
   font-weight: 500;
   color: #9ca3af;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .days-grid {
@@ -322,7 +322,7 @@
   color: #1f2937;
   cursor: pointer;
   border-radius: 50%;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   transition: background-color 0.2s;
 }
 
@@ -362,7 +362,7 @@
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   transition: background-color 0.2s;
 }
 
@@ -414,7 +414,7 @@
 .filter-label {
   font-size: 14px;
   color: #4b5563;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .filter-btn {
@@ -424,7 +424,7 @@
   background-color: #fff;
   color: #4b5563;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -444,7 +444,7 @@
   font-size: 14px;
   color: #4b5563;
   margin-bottom: 20px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Logs List */
@@ -478,13 +478,13 @@
   font-size: 16px;
   font-weight: 600;
   color: #1f2937;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .log-day {
   font-size: 14px;
   color: #3b82f6;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .date-line {
@@ -525,7 +525,7 @@
   border-radius: 16px;
   font-size: 13px;
   font-weight: 500;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   width: fit-content;
 }
 
@@ -558,7 +558,7 @@
   gap: 8px;
   font-size: 14px;
   color: #4b5563;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .log-stats .dot {
@@ -571,7 +571,7 @@
   gap: 6px;
   font-size: 13px;
   color: #3b82f6;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .log-updated svg {
@@ -608,7 +608,7 @@
   background-color: #fff;
   color: #4b5563;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -631,4 +631,13 @@
 .page-btn.nav-btn svg {
   width: 16px;
   height: 16px;
+}
+.view-table-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
