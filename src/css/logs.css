@@ -452,6 +452,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-height: 520px; /* Adjust this value based on the height of 3 log-groups */
+  margin-bottom: 20px;
 }
 
 .log-group {

@@ -31,10 +31,10 @@ db.get(
         (err) => {
           if (err) console.error("Error adding admin:", err.message);
           else console.log("Default admin created");
-        }
+        },
       );
     }
-  }
+  },
 );
 
 /* =========================
@@ -56,6 +56,21 @@ app.post("/login", (req, res) => {
   });
 });
 
+/* =========================
+   FETCH ALL LOGS
+========================= */
+app.get("/logs", (req, res) => {
+  const sql = "SELECT * FROM logs ORDER BY timestamp DESC";
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error("Error fetching all logs:", err.message);
+      return res.status(500).json({ message: "Failed to fetch logs" });
+    }
+    // This sends all stored data back to your React app
+    res.json(rows);
+  });
+});
 /* =========================
    ADD LOG ENTRY
 ========================= */
@@ -128,7 +143,7 @@ app.get("/logs/export/pdf", (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `inline; filename="daily-maintenance-log.pdf"`
+      `inline; filename="daily-maintenance-log.pdf"`,
     );
 
     const doc = new PDFDocument({ size: "A4", margin: 36 });
@@ -166,7 +181,9 @@ app.get("/logs/export/pdf", (req, res) => {
     });
 
     doc.font("Helvetica-Bold").fontSize(10);
-    doc.text("CIVIL AVIATION AUTHORITY OF THE PHILIPPINES", { align: "center" });
+    doc.text("CIVIL AVIATION AUTHORITY OF THE PHILIPPINES", {
+      align: "center",
+    });
     doc.text("AIR NAVIGATION SERVICE", { align: "center" });
 
     doc.moveDown(1);
@@ -176,10 +193,16 @@ app.get("/logs/export/pdf", (req, res) => {
     const lineGap = 6;
     doc.font("Helvetica").fontSize(9);
     doc.text("FACILITY:", left, y);
-    doc.moveTo(left + 41, y + lineGap).lineTo(left + 200, y + lineGap).stroke();
+    doc
+      .moveTo(left + 41, y + lineGap)
+      .lineTo(left + 200, y + lineGap)
+      .stroke();
 
     doc.text("MONTH/YEAR:", left + 380, y);
-    doc.moveTo(left + 443, y + lineGap).lineTo(right, y + lineGap).stroke();
+    doc
+      .moveTo(left + 443, y + lineGap)
+      .lineTo(right, y + lineGap)
+      .stroke();
 
     // Put selected facility text if provided
     if (facility) {
@@ -189,11 +212,11 @@ app.get("/logs/export/pdf", (req, res) => {
 
     // ====== Right-aligned Title ======
     y += 28;
-  doc.font("Helvetica-Bold").fontSize(10);
-  doc.text("DAILY MAINTENANCE LOG", left, y, {
-    width: right - left,
-    align: "center",
-  });
+    doc.font("Helvetica-Bold").fontSize(10);
+    doc.text("DAILY MAINTENANCE LOG", left, y, {
+      width: right - left,
+      align: "center",
+    });
     // ====== Table geometry ======
     y += 18;
     const tableTop = y;
@@ -233,7 +256,6 @@ app.get("/logs/export/pdf", (req, res) => {
       align: "center",
     });
 
-
     drawHLine(tableTop + headerH, 1.0);
 
     const drawTableVerticals = (y1, y2) => {
@@ -246,87 +268,99 @@ app.get("/logs/export/pdf", (req, res) => {
 
     let curY = tableTop + headerH;
 
-    
-// ====== Rows (FIXED COUNT) ======
-doc.font("Helvetica").fontSize(8);
+    // ====== Rows (FIXED COUNT) ======
+    doc.font("Helvetica").fontSize(8);
 
-const usedRows = Math.min(rows.length, FIXED_ROWS);
+    const usedRows = Math.min(rows.length, FIXED_ROWS);
 
-for (let i = 0; i < FIXED_ROWS; i++) {
-  const log = i < usedRows ? rows[i] : null;
+    for (let i = 0; i < FIXED_ROWS; i++) {
+      const log = i < usedRows ? rows[i] : null;
 
-  if (log) {
-    const d = new Date(log.timestamp);
-    const dateStr = d.toISOString().slice(0, 10);
-    const timeStr = d.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+      if (log) {
+        const d = new Date(log.timestamp);
+        const dateStr = d.toISOString().slice(0, 10);
+        const timeStr = d.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
 
-    // centered in columns
-    doc.text(dateStr, xDate, curY + 4, { width: xTime - xDate, align: "center" });
-    doc.text(timeStr, xTime, curY + 4, { width: xRemarks - xTime, align: "center" });
+        // centered in columns
+        doc.text(dateStr, xDate, curY + 4, {
+          width: xTime - xDate,
+          align: "center",
+        });
+        doc.text(timeStr, xTime, curY + 4, {
+          width: xRemarks - xTime,
+          align: "center",
+        });
 
-    // remarks usually look better left-aligned
-    doc.text(log.remarks || "", xRemarks + 4, curY + 4, {
-      width: xInitials - xRemarks - 8,
-      align: "left",
-      ellipsis: true,
-    });
+        // remarks usually look better left-aligned
+        doc.text(log.remarks || "", xRemarks + 4, curY + 4, {
+          width: xInitials - xRemarks - 8,
+          align: "left",
+          ellipsis: true,
+        });
 
-    doc.text(log.initials || "", xInitials, curY + 4, {
-      width: xEnd - xInitials,
-      align: "center",
-    });
-  }
+        doc.text(log.initials || "", xInitials, curY + 4, {
+          width: xEnd - xInitials,
+          align: "center",
+        });
+      }
 
-  // always draw the row line (even for empty rows)
-  drawHLine(curY + rowH, 0.8);
-  curY += rowH;
-}
+      // always draw the row line (even for empty rows)
+      drawHLine(curY + rowH, 0.8);
+      curY += rowH;
+    }
 
     drawTableVerticals(tableTop, curY);
 
-    
     // ====== Signatures (text UNDER the lines, centered) ======
-let sigY = 730;
+    let sigY = 730;
 
-// line sizes
-const lineW = 132;     // change this to make the underline longer/shorter
-const gap = 70;        // space between left block and right block (visual)
-const labelGap = 1;    // space between line and label text
+    // line sizes
+    const lineW = 132; // change this to make the underline longer/shorter
+    const gap = 70; // space between left block and right block (visual)
+    const labelGap = 1; // space between line and label text
 
-// left block (near left margin)
-const xL = left;
+    // left block (near left margin)
+    const xL = left;
 
-// right block (near right margin)
-const xR = right - lineW; // <-- this makes it hug the right margin
+    // right block (near right margin)
+    const xR = right - lineW; // <-- this makes it hug the right margin
 
+    // --- RIGHT TOP: DAY SHIFT SUPERVISOR ---
+    doc
+      .moveTo(xR, sigY)
+      .lineTo(xR + lineW, sigY)
+      .stroke();
+    doc.font("Helvetica").fontSize(9);
+    doc.text("DAY SHIFT SUPERVISOR", xR, sigY + labelGap, {
+      width: lineW,
+      align: "center",
+    });
 
-// --- RIGHT TOP: DAY SHIFT SUPERVISOR ---
-doc.moveTo(xR, sigY).lineTo(xR + lineW, sigY).stroke();
-doc.font("Helvetica").fontSize(9);
-doc.text("DAY SHIFT SUPERVISOR", xR, sigY + labelGap, {
-  width: lineW,
-  align: "center",
-});
+    // --- RIGHT BOTTOM: EVE-MID SHIFT SUPERVISOR ---
+    const sigY2 = sigY + 45; // vertical spacing between the two right lines
+    doc
+      .moveTo(xR, sigY2)
+      .lineTo(xR + lineW, sigY2)
+      .stroke();
+    doc.font("Helvetica").fontSize(9);
+    doc.text("EVE-MID SHIFT SUPERVISOR", xR, sigY2 + labelGap, {
+      width: lineW,
+      align: "center",
+    });
+    // --- LEFT: FACILITY IN CHARGE ---
 
-// --- RIGHT BOTTOM: EVE-MID SHIFT SUPERVISOR ---
-const sigY2 = sigY + 45; // vertical spacing between the two right lines
-doc.moveTo(xR, sigY2).lineTo(xR + lineW, sigY2).stroke();
-doc.font("Helvetica").fontSize(9);
-doc.text("EVE-MID SHIFT SUPERVISOR", xR, sigY2 + labelGap, {
-  width: lineW,
-  align: "center",
-});
-// --- LEFT: FACILITY IN CHARGE ---
-
-doc.moveTo(xL, sigY2).lineTo(xL + lineW, sigY2).stroke();
-doc.font("Helvetica").fontSize(9);
-doc.text("FACILITY IN CHARGE", xL, sigY2 + labelGap, {
-  width: lineW,
-  align: "center",
-});
+    doc
+      .moveTo(xL, sigY2)
+      .lineTo(xL + lineW, sigY2)
+      .stroke();
+    doc.font("Helvetica").fontSize(9);
+    doc.text("FACILITY IN CHARGE", xL, sigY2 + labelGap, {
+      width: lineW,
+      align: "center",
+    });
 
     doc.end();
   });
@@ -343,27 +377,76 @@ app.get("/logs/latest", (req, res) => {
     LIMIT 3
   `;
 
-  db.all(sql, [], (err, rows) => { // use db.all instead of db.get for multiple rows
+  db.all(sql, [], (err, rows) => {
+    // use db.all instead of db.get for multiple rows
     if (err) {
       console.error("Error fetching latest log:", err.message);
       return res.status(500).json({ message: "Failed to fetch latest log" });
     }
 
-    if (!row) return res.json(null);
-    res.json(row);
+    if (!rows || rows.length === 0) return res.json([]);
+    res.json(rows);
   });
 });
+
+// GET
 
 app.get("/debug/routes", (req, res) => {
   const routes = app._router.stack
     .filter((r) => r.route)
     .map(
-      (r) =>
-        Object.keys(r.route.methods)[0].toUpperCase() + " " + r.route.path
+      (r) => Object.keys(r.route.methods)[0].toUpperCase() + " " + r.route.path,
     );
   res.json(routes);
 });
 
+// UPDATE
+// PUT /logs/:id
+app.put("/logs/:id", (req, res) => {
+  const { id } = req.params;
+  const { timeUTC, initials, remarks } = req.body;
+
+  // DEBUG: Check your terminal to see if these are 'undefined'
+  console.log("PUT Request Received - ID:", id, "Body:", req.body);
+
+  if (!id || id === "undefined") {
+    return res.status(400).json({ message: "Invalid ID provided" });
+  }
+
+  const sql = `UPDATE logs SET timeUTC = ?, initials = ?, remarks = ? WHERE id = ?`;
+
+  db.run(sql, [timeUTC, initials, remarks, id], function (err) {
+    if (err) {
+      console.error("Database Error:", err.message);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    if (this.changes === 0) {
+      console.log("No rows updated. Does the ID exist in the DB?");
+      return res.status(404).json({ message: "Log entry not found" });
+    }
+
+    console.log(`Successfully updated ID: ${id}`);
+    res.json({ id, timeUTC, initials, remarks });
+  });
+});
+
+// DELETE /logs/:id
+app.delete("/logs/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM logs WHERE id = ?", [id], function (err) {
+    if (err) {
+      console.error("Error deleting log:", err.message);
+      return res.status(500).json({ message: "Failed to delete log" });
+    }
+
+    res.json({ success: true });
+  });
+});
+
+
+
 app.listen(5000, () =>
-  console.log("✅ Server running on http://localhost:5001")
+  console.log("✅ Server running on http://localhost:5000"),
 );

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import "../css/addLogModal.css";
 import add from "../assets/add.png";
-function AddLogEntryModal({ isOpen, onClose, onSave }) {
-  const [timeUTC, setTimeUTC] = useState("");
-  const [initials, setInitials] = useState("");
-  const [remarks, setRemarks] = useState("");
+
+// Added initialData to props
+function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
+  // Initialize state directly from initialData (if editing) or empty (if adding)
+  const [timeUTC, setTimeUTC] = useState(initialData?.timeUTC || "");
+  const [initials, setInitials] = useState(initialData?.initials || "");
+  const [remarks, setRemarks] = useState(initialData?.remarks || "");
   const [images, setImages] = useState([]);
 
   if (!isOpen) return null;
@@ -13,16 +16,19 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
     e.preventDefault();
 
     const entry = {
+      // 🔥 CRITICAL: Include the ID so the backend knows which row to update
+      ...(initialData?.id && { id: initialData.id }), 
       timeUTC,
       initials,
       remarks,
       images,
-      timestamp: new Date().toISOString(),
+      timestamp: initialData?.timestamp || new Date().toISOString(),
     };
 
     onSave(entry);
     onClose();
 
+    // Reset local state
     setTimeUTC("");
     setInitials("");
     setRemarks("");
@@ -32,21 +38,19 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
   return (
     <div className="modal-overlay">
       <div className="modal-box">
-        {/* Header */}
         <div className="modal-header">
           <div>
-            <h3>Add Log Entry</h3>
-            <p>Record a new event, incident, or note</p>
+            <h3>{initialData ? "Edit Log Entry" : "Add Log Entry"}</h3>
+            <p>{initialData ? "Update the information below" : "Record a new event, incident, or note"}</p>
           </div>
           <div className="add-icon-container">
             <img src={add} alt="add-icon" className="add-icon" />
           </div>
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" type="button" onClick={onClose}>
             ✕
           </button>
         </div>
 
-        {/* Body */}
         <form onSubmit={handleSubmit} className="modal-body">
           <div className="row">
             <div className="field">
@@ -90,20 +94,12 @@ function AddLogEntryModal({ isOpen, onClose, onSave }) {
             />
           </div>
 
-          <div className="note">
-            <strong>Note:</strong>
-            <br />
-            All log entries are timestamped automatically. Please ensure all
-            required information is accurate before submitting.
-          </div>
-
-          {/* Footer */}
           <div className="modal-footer">
             <button type="button" className="cancel-btn" onClick={onClose}>
               Cancel
             </button>
             <button type="submit" className="save-btn">
-              Save Entry
+              {initialData ? "Update Entry" : "Save Entry"}
             </button>
           </div>
         </form>
