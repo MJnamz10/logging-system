@@ -300,6 +300,7 @@
   font-weight: normal;
   margin-left: 75px;
   position: relative;
+  font-weight: 700;
   top: 30px;
   color: white;
 }
@@ -307,7 +308,8 @@
   font-size: 18px;
   position: relative;
   top: 30px;
-  right: 120px;
+  font-weight: 500;
+  right: 131px;
   color: #dbeafe;
 }
 .quick-actions .quick-text {

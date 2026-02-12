@@ -44,6 +44,7 @@
   background: linear-gradient(to right, #1D49AB, #13318D);
   padding: 20px 32px 20px 32px;
   display: flex;
+  height: 130px;
   flex-direction: column;
   gap: 6px;
   position: relative;
@@ -51,6 +52,7 @@
 
 /* --- Top row: Title | Search | Status + Arrow --- */
 .header-top-row {
+  margin-top: 25px;
   display: flex;
   align-items: center;
   gap: 24px;
@@ -74,13 +76,13 @@
 }
 
 .header-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   color: white;
 }
 
 .header-title-group h2 {
-  font-size: 28px;
+  font-size: 30px;
   font-family: "Arima", sans-serif;
   color: white;
   margin: 0;
@@ -89,10 +91,10 @@
 }
 
 .header-subtitle {
-  font-size: 20px;
+  font-size: 22px;
   font-family: "Arima", sans-serif;
   color: rgba(255, 255, 255, 0.75);
-  margin: 8px 0 0 0;
+  margin: 14px 0 0 0;
 }
 
 /* Center: search bar */
@@ -100,7 +102,7 @@
   flex: 1;
   width: 400px;
   position: fixed;
-  margin-left: 900px;
+  margin-left: 800px;
 }
 
 .header-search .search-icon {
@@ -121,7 +123,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   color: #374151;
-  font-size: 0.9rem;
+  font-size: 18px;
   outline: none;
   transition: all 0.2s;
   box-sizing: border-box;
@@ -153,8 +155,8 @@
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-top: -100px;
+  margin-left: 1000px;
 }
 
 .back-arrow svg {
@@ -175,37 +177,55 @@
   padding-left: 48px; /* align with title text (icon width + gap) */
 }
 
-.clock-icon {
+.clock-icons {
+  top: 125px;
+  margin-left: 18px;
   width: 16px;
   height: 16px;
   color: rgba(255, 255, 255, 0.8);
+  
 }
 
 .header-date {
-  font-size: 0.8rem;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: "Arima", sans-serif;
+  margin-left: 40px;
+  top: 125px;
   color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
+  position: absolute;
+}
+
+.header-count-container {
+  position: absolute;
+  top: 40px;
+  left: 430px;
+  background-color: rgba(255, 255, 255, 0.3); /* semi-transparent */
+  padding: 20px 30px;
+  border-radius: 12px;
 }
 
 /* --- Entry count row --- */
 .header-count-row {
-  display: flex;
+   display: flex;
   flex-direction: column;
-  padding-top: 4px;
+  align-items: flex-start;
 }
 
 .count-number {
-  font-size: 1.6rem;
+ font-size: 28px;
+  font-family: "Arima", sans-serif;
   color: white;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .count-label {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-family: "Arima", sans-serif;
+  font-size: 18px;
+  color: white;
+  font-weight: 400;
+  margin-top: 14px;
 }
 
 /* ==================== TABLE SECTION ==================== */
@@ -216,10 +236,13 @@
   padding: 0;
 }
 
-.log-entries-table {
+.log-modal-body .log-entries-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 18px;
+  text-align: center;
+  font-family: "Arimo", sans-serif;
+  color: black;
 }
 
 .log-entries-table thead {
@@ -232,15 +255,19 @@
 .log-entries-table th {
   padding: 14px 24px;
   text-align: left;
-  color: #6b7280;
-  font-weight: 500;
-  font-size: 0.85rem;
+  color: #000000;
+  font-weight: 700;
+  font-family: "Arimo", sans-serif;
+
+  font-size: 20px;
+  border-right: #e5e7eb solid 1px;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .log-entries-table tbody tr {
   border-bottom: 1px solid #f3f4f6;
   transition: background 0.15s;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .log-entries-table tbody tr:hover {
@@ -251,6 +278,7 @@
   padding: 16px 24px;
   color: #374151;
   vertical-align: middle;
+  border-right: #e5e7eb solid 1px;
 }
 
 .date-col-bold {
@@ -285,8 +313,9 @@
 }
 
 .footer-info {
-  font-size: 0.85rem;
-  color: #9ca3af;
+  font-size: 18px; 
+  font-family: "Arima", sans-serif;
+  color: #000000;
 }
 
 .footer-buttons {
@@ -300,7 +329,8 @@
   border-radius: 20px;
   border: none;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 18px;
+  font-family: "Arima", sans-serif;
   cursor: pointer;
   transition: all 0.2s;
 }
