@@ -10,13 +10,12 @@
 .dashboard-container {
   position: fixed;
   top: 0;
-  left: 0;
   bottom: 0;
   width: 300px;
   max-width: 20%;
   padding: 20px;
   background-color: #fff;
-  border-right: 1px solid #e5e7eb;
+  border-right: 2px solid #e5e7eb;
   z-index: 10;
 }
 .logs-page .logs-header {
@@ -27,7 +26,7 @@
   left: 0;
   top: 0;
   color: white;
-  border-bottom: solid 1px #e5e7eb;
+  border-bottom: 3px solid #e5e7eb;
   z-index: 5;
 }
 .title-container {
@@ -67,12 +66,12 @@
   font-family: "Inter", sans-serif;
 }
 
-.sidebar-divider {
+.dashboard-container .sidebar-divider {
   position: absolute;
   top: 100px;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background-color: #e5e7eb;
 }
 

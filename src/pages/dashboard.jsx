@@ -110,6 +110,8 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       );
     });
 
+  // LAYOUT AND UI LOGIC
+
   return (
     <div className="dashboard-page">
       <div className="dash-header"></div>
@@ -219,8 +221,18 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                     stroke-linejoin="round"
                   />
 
-                  <path d="M8 12 H15" stroke="white" stroke-width="1" stroke-linecap="round"/>
-                  <path d="M8 16 H15" stroke="white" stroke-width="1" stroke-linecap="round"/>
+                  <path
+                    d="M8 12 H15"
+                    stroke="white"
+                    stroke-width="1"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M8 16 H15"
+                    stroke="white"
+                    stroke-width="1"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </div>
               <div class="entries-wrapper">
@@ -295,11 +307,8 @@ function Dashboard({ latestLogs, setLatestLogs }) {
           </div>
         </div>
       </div>
-
-      {/* Replace the Modal call at the bottom of Dashboard.js with this */}
       {(showAddLog || !!editingLog) && (
         <AddLogEntryModal
-          // The key forces a fresh start every time you click a different edit button
           key={editingLog ? `edit-${editingLog.id}` : "add-new"}
           isOpen={true}
           onClose={() => {

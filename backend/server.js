@@ -14,7 +14,7 @@ app.use(bodyParser.json());
    DEFAULT ADMIN
 ========================= */
 const defaultAdmin = {
-  email: "admin@example.com",
+  email: "admincaap",
   password: "admin123",
 };
 

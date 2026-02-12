@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import "../css/addLogModal.css";
 import add from "../assets/add.png";
 
-// Added initialData to props
 function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
-  // Initialize state directly from initialData (if editing) or empty (if adding)
+  // Use timeUTC as the single source of truth for the clock input
   const [timeUTC, setTimeUTC] = useState(initialData?.timeUTC || "");
   const [initials, setInitials] = useState(initialData?.initials || "");
   const [remarks, setRemarks] = useState(initialData?.remarks || "");
@@ -12,12 +11,33 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
 
   if (!isOpen) return null;
 
+  // Masked 24-hour input logic
+  const handleTimeChange = (e) => {
+    let val = e.target.value.replace(/\D/g, "");
+
+    if (val.length >= 3) {
+      val = `${val.slice(0, 2)}:${val.slice(2, 4)}`;
+    }
+
+    const [hh, mm] = val.split(":");
+    // Validate bounds: Hours < 24, Minutes < 60
+    if (hh && parseInt(hh) > 23) return;
+    if (mm && parseInt(mm) > 59) return;
+
+    setTimeUTC(val);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Basic requirement check since it's a custom text input now
+    if (timeUTC.length < 5) {
+      alert("Please enter a valid time (HH:mm)");
+      return;
+    }
+
     const entry = {
-      // 🔥 CRITICAL: Include the ID so the backend knows which row to update
-      ...(initialData?.id && { id: initialData.id }), 
+      ...(initialData?.id && { id: initialData.id }),
       timeUTC,
       initials,
       remarks,
@@ -28,7 +48,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
     onSave(entry);
     onClose();
 
-    // Reset local state
+    // Reset fields
     setTimeUTC("");
     setInitials("");
     setRemarks("");
@@ -41,7 +61,11 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
         <div className="modal-header">
           <div>
             <h3>{initialData ? "Edit Log Entry" : "Add Log Entry"}</h3>
-            <p>{initialData ? "Update the information below" : "Record a new event, incident, or note"}</p>
+            <p>
+              {initialData
+                ? "Update the information below"
+                : "Record a new event, incident, or note"}
+            </p>
           </div>
           <div className="add-icon-container">
             <img src={add} alt="add-icon" className="add-icon" />
@@ -54,18 +78,21 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
         <form onSubmit={handleSubmit} className="modal-body">
           <div className="row">
             <div className="field">
-              <label>Time *</label>
-              <input
+              <label>Time (UTC) *</label>
+              <input className="time-input"
                 type="text"
                 required
+                placeholder="00:00"
                 value={timeUTC}
-                onChange={(e) => setTimeUTC(e.target.value)}
+                onChange={handleTimeChange}
+                maxLength="5"
+                inputMode="numeric" 
               />
             </div>
 
             <div className="field">
               <label>Personnel Initials *</label>
-              <input
+              <input className="personnel-input"
                 required
                 placeholder="e.g. KS RC GP JD"
                 value={initials}
