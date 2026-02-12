@@ -22,8 +22,16 @@ db.run(`
     timeUTC TEXT NOT NULL,
     initials TEXT NOT NULL,
     remarks TEXT NOT NULL,
-    timestamp TEXT NOT NULL
+    timestamp TEXT NOT NULL,
+    images TEXT DEFAULT '[]'
   )
 `);
+
+// Add images column if it doesn't exist (for existing databases)
+db.run(`ALTER TABLE logs ADD COLUMN images TEXT DEFAULT '[]'`, (err) => {
+  if (err && !err.message.includes('duplicate column')) {
+    console.error('Error adding images column:', err.message);
+  }
+});
 
 module.exports = db;

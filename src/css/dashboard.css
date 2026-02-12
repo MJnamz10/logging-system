@@ -521,14 +521,9 @@
 
 .logs-table th:nth-child(4), /* Initials column */
 .logs-table td:nth-child(4) {
-  width: 20%;
+  width: 12%;
 }
 
-.logs-table th:nth-child(5), /* Remarks column */
-.logs-table td:nth-child(5) {
-  width: 45%;
-  border-right: none;
-}
 .viewlogs-icon {
   width: 30px;
   height: 30px;
@@ -598,4 +593,210 @@
   position: absolute;
   right: 30px;
   padding-top: 15px;
+}
+
+/* Images Column Styles */
+.images-cell {
+  text-align: center;
+}
+
+.view-image-btn {
+  background: linear-gradient(to right, #1D49AB, #13318D);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: "Arimo", sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.view-image-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(29, 73, 171, 0.4);
+}
+
+.no-images {
+  color: #9ca3af;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Image Gallery Modal */
+.image-gallery-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.image-gallery-modal {
+  background: white;
+  border-radius: 12px;
+  width: 700px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-header {
+  background: linear-gradient(to right, #1D49AB, #13318D);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gallery-header h3 {
+  margin: 0;
+  color: white;
+  font-family: "Arimo", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.gallery-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.gallery-close-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.gallery-content {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.gallery-item {
+  background: #f8fafc;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+  border-color: #1D49AB;
+  box-shadow: 0 8px 20px rgba(29, 73, 171, 0.2);
+}
+
+.gallery-thumbnail {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.gallery-filename {
+  font-size: 12px;
+  font-family: "Arimo", sans-serif;
+  color: #374151;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-filesize {
+  font-size: 11px;
+  font-family: "Arimo", sans-serif;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Full Image Preview Modal */
+.full-image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+}
+
+.full-image-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.full-image {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.full-image-close-btn {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.full-image-close-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Update table column widths to accommodate Images column */
+.logs-table th:nth-child(5),
+.logs-table td:nth-child(5) {
+  width: 30%;
+  border-right: 1px solid #e0e0e0;
+}
+
+.logs-table th:nth-child(6),
+.logs-table td:nth-child(6) {
+  width: 12%;
+  border-right: 1px solid #e0e0e0;
+}
+
+.logs-table th:nth-child(7),
+.logs-table td:nth-child(7) {
+  width: 10%;
+  border-right: none;
 }
