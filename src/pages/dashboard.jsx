@@ -6,29 +6,41 @@ import clock from "../assets/clock-bold.svg";
 import add from "../assets/add.png";
 import exp from "../assets/export.png";
 import search from "../assets/search-icon.png";
-//import viewlogs from "../assets/view.png";
 import del from "../assets/delete.png";
 import edit from "../assets/edit.png";
 import "../css/dashboard.css";
 import AddLogEntryModal from "./AddLogEntryModal";
 import { useLocation, useNavigate } from "react-router-dom";
 
+/* ============================================================
+   DASHBOARD COMPONENT
+   Main dashboard page with log entries table and quick actions
+============================================================ */
 function Dashboard({ latestLogs, setLatestLogs }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [dateTime, setDateTime] = useState(new Date());
-  const [showAddLog, setShowAddLog] = useState(false);
-  const [editingLog, setEditingLog] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  /* ----------------------------------------------------------
+     STATE VARIABLES
+  ---------------------------------------------------------- */
+  const [dateTime, setDateTime] = useState(new Date()); // Current date/time for clock
+  const [showAddLog, setShowAddLog] = useState(false); // Toggle Add Log modal
+  const [editingLog, setEditingLog] = useState(null); // Log being edited (null = not editing)
+  const [searchTerm, setSearchTerm] = useState(""); // Search filter text
+  const [previewImage, setPreviewImage] = useState(null); // for full-screen preview
 
-  // CLOCK
+  /* ----------------------------------------------------------
+     EFFECT: Real-time clock update (every second)
+  ---------------------------------------------------------- */
   useEffect(() => {
     const timer = setInterval(() => setDateTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // EXPORT PDF
+  /* ----------------------------------------------------------
+     ACTION: Export logs as PDF
+     Downloads all logs as a formatted PDF document
+  ---------------------------------------------------------- */
   const handleExportPdf = async () => {
     const response = await fetch("http://localhost:5000/logs/export/pdf");
     const blob = await response.blob();
@@ -41,26 +53,56 @@ function Dashboard({ latestLogs, setLatestLogs }) {
     window.URL.revokeObjectURL(url);
   };
 
-  // ADD LOG
+  /* ----------------------------------------------------------
+     ACTION: Add new log entry
+     Sends new log to backend and updates local state with response
+     - entry: Object containing timeUTC, initials, remarks, images
+     - Returns true on success, false on failure
+  ---------------------------------------------------------- */
   const handleSaveLog = async (entry) => {
-    const res = await fetch("http://localhost:5000/logs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(entry),
-    });
+    console.log("Saving log entry with images:", entry); // Debug log
 
-    const savedLog = await res.json();
-    setLatestLogs((prev) => [...prev, savedLog]);
-    setShowAddLog(false);
+    try {
+      const res = await fetch("http://localhost:5000/logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Server error:", errorData);
+        alert(`Error saving log: ${errorData.message || "Unknown error"}`);
+        return false;
+      }
+
+      const savedLog = await res.json();
+      console.log("Backend response:", savedLog); // Debug log
+
+      // Update local state with the saved log (includes images from backend)
+      setLatestLogs((prev) => [...prev, savedLog]);
+      setShowAddLog(false);
+      return true;
+    } catch (error) {
+      console.error("Network error saving log:", error);
+      alert(`Failed to save log entry: ${error.message}`);
+      return false;
+    }
   };
 
-  // UPDATE LOG
+  /* ----------------------------------------------------------
+     ACTION: Update existing log entry
+     Sends updated log to backend and updates local state
+     - updatedLog: Object with id and updated fields
+  ---------------------------------------------------------- */
   const handleUpdateLog = async (updatedLog) => {
-    // Check if ID exists before sending
+    // Validate ID exists before sending request
     if (!updatedLog.id) {
       console.error("Error: The log object is missing an ID!");
       return;
     }
+
+    console.log("Updating log entry:", updatedLog); // Debug log
 
     try {
       const res = await fetch(`http://localhost:5000/logs/${updatedLog.id}`, {
@@ -71,14 +113,16 @@ function Dashboard({ latestLogs, setLatestLogs }) {
 
       if (res.ok) {
         const data = await res.json();
-        // Update local state
+        console.log("Update response:", data); // Debug log
+
+        // Update local state with the modified log
         setLatestLogs((prev) =>
           prev.map((log) =>
             log.id === updatedLog.id ? { ...log, ...data } : log,
           ),
         );
         setEditingLog(null);
-        alert("Update Successful"); // Temporary alert to confirm
+        alert("Update Successful");
       } else {
         const errorData = await res.json();
         alert(`Error: ${errorData.message}`);
@@ -87,7 +131,12 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       console.error("Network error:", error);
     }
   };
-  // DELETE LOG
+
+  /* ----------------------------------------------------------
+     ACTION: Delete log entry
+     Removes log from backend and local state after confirmation
+     - id: ID of the log entry to delete
+  ---------------------------------------------------------- */
   const handleDeleteLog = async (id) => {
     if (!window.confirm("Delete this log entry?")) return;
 
@@ -95,10 +144,15 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       method: "DELETE",
     });
 
+    // Remove from local state
     setLatestLogs((prev) => prev.filter((log) => log.id !== id));
   };
 
-  // FILTER + SORT (OLDEST → NEWEST)
+  /* ----------------------------------------------------------
+     COMPUTED: Filtered and sorted logs
+     - Sorts by timestamp (oldest to newest)
+     - Filters by search term (time, initials, or remarks)
+  ---------------------------------------------------------- */
   const filteredLogs = [...latestLogs]
     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
     .filter((log) => {
@@ -110,13 +164,15 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       );
     });
 
-  // LAYOUT AND UI LOGIC
-
+  /* ============================================================
+     RENDER: Main Dashboard Layout
+  ============================================================ */
   return (
     <div className="dashboard-page">
       <div className="dash-header"></div>
 
       <div className="dashboard-container">
+        {/* ------ Logo and Title ------ */}
         <div className="title-container">
           <img src={logo} alt="CAAP Logo" className="logo" />
           <h1>Logging System</h1>
@@ -126,7 +182,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
         <div className="sidebar-divider"></div>
 
         <div className="dash-options">
-          {/* SIDEBAR */}
+          {/* ====== SIDEBAR NAVIGATION ====== */}
           <div
             className={
               location.pathname === "/dashboard" ? "active-item" : "item"
@@ -145,7 +201,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
             <h className="logs">Logs</h>
           </div>
 
-          {/* HEADER */}
+          {/* ====== HEADER WITH CLOCK ====== */}
           <div className="header-container">
             <h className="header-title">Air Navigation Service</h>
             <div className="datetime-container">
@@ -168,10 +224,11 @@ function Dashboard({ latestLogs, setLatestLogs }) {
             </div>
           </div>
 
-          {/* QUICK ACTIONS */}
+          {/* ====== QUICK ACTIONS BUTTONS ====== */}
           <div className="quick-actions">
             <h className="quick-text">Quick Actions</h>
             <div className="actions-items">
+              {/* Add Log Entry Button */}
               <button className="action" onClick={() => setShowAddLog(true)}>
                 <p className="action-text1">Add Log Entry</p>
                 <p className="action-text2">Record a new event or note</p>
@@ -180,6 +237,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                 </div>
               </button>
 
+              {/* Export PDF Button */}
               <button className="action" onClick={handleExportPdf}>
                 <p className="action-text1">Export PDF</p>
                 <p className="action-text2">Download log as PDF report</p>
@@ -190,8 +248,9 @@ function Dashboard({ latestLogs, setLatestLogs }) {
             </div>
           </div>
 
-          {/* TABLE */}
+          {/* ====== LOG ENTRIES TABLE ====== */}
           <div className="entry-container">
+            {/* Table Header with search */}
             <div className="table-header">
               <h className="entry-text">
                 Log Entries
@@ -209,37 +268,36 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                     d="M6 2 H14 L19 7 V20 A2 2 0 0 1 17 22 H6 A2 2 0 0 1 4 20 V4 A2 2 0 0 1 6 2 Z"
                     fill="none"
                     stroke="white"
-                    stroke-width="2"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
                   />
-
                   <path
                     d="M14 2 V7 H19"
                     fill="none"
                     stroke="white"
-                    stroke-width="2"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
                   />
-
                   <path
                     d="M8 12 H15"
                     stroke="white"
-                    stroke-width="1"
-                    stroke-linecap="round"
+                    strokeWidth="1"
+                    strokeLinecap="round"
                   />
                   <path
                     d="M8 16 H15"
                     stroke="white"
-                    stroke-width="1"
-                    stroke-linecap="round"
+                    strokeWidth="1"
+                    strokeLinecap="round"
                   />
                 </svg>
               </div>
-              <div class="entries-wrapper">
+              <div className="entries-wrapper">
                 <p className="entries-count">{filteredLogs.length} </p>
                 <p className="total">TOTAL ENTRIES</p>
               </div>
 
+              {/* Search Input */}
               <div className="table-controls">
                 <img src={search} alt="search" className="search-symbol" />
                 <input
@@ -251,6 +309,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
               </div>
             </div>
 
+            {/* Table Body - Log Entries List */}
             <div className="table-container">
               {filteredLogs.length > 0 ? (
                 <table className="logs-table">
@@ -261,6 +320,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                       <th>Time (UTC)</th>
                       <th>Initials</th>
                       <th>Remarks</th>
+                      <th>Image</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -279,6 +339,62 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                         <td>{log.timeUTC}</td>
                         <td>{log.initials}</td>
                         <td>{log.remarks}</td>
+                        <td className="image-cell">
+                          {(() => {
+                            if (!log.images)
+                              return <span className="no-image">No Image</span>;
+
+                            let parsed = [];
+
+                            try {
+                              parsed =
+                                typeof log.images === "string"
+                                  ? JSON.parse(log.images)
+                                  : log.images;
+                            } catch (err) {
+                              console.error("Image parse error:", err);
+                              return <span className="no-image">No Image</span>;
+                            }
+
+                            if (!parsed.length)
+                              return <span className="no-image">No Image</span>;
+
+                            return parsed.map((img, i) => (
+                              <img
+                                key={i}
+                                src={img.data}
+                                alt="log"
+                                className="table-image"
+                                onClick={() => setPreviewImage(img.data)} // open preview
+                              />
+                            ));
+                          })()}
+
+                          {previewImage && (
+                            <div
+                              className="image-preview-overlay"
+                              onClick={() => setPreviewImage(null)}
+                            >
+                              <div
+                                className="image-preview-container"
+                                onClick={(e) => e.stopPropagation()} // prevent closing when clicking image
+                              >
+                                <button
+                                  className="preview-close-btn"
+                                  onClick={() => setPreviewImage(null)}
+                                >
+                                  ✕
+                                </button>
+                                <img
+                                  src={previewImage}
+                                  alt="Full Preview"
+                                  className="full-preview-image"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </td>
+                        {/* Actions Column - Edit & Delete */}
                         <td className="actions-icons">
                           <button
                             className="icon-btn edit-btn"
@@ -307,6 +423,8 @@ function Dashboard({ latestLogs, setLatestLogs }) {
           </div>
         </div>
       </div>
+
+      {/* ====== ADD/EDIT LOG ENTRY MODAL ====== */}
       {(showAddLog || !!editingLog) && (
         <AddLogEntryModal
           key={editingLog ? `edit-${editingLog.id}` : "add-new"}

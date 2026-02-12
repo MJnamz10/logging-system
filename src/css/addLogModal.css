@@ -16,9 +16,11 @@
 .modal-box {
   background: #ffffff;
   width: 820px;
-  height: 820px;
+  max-height: 95vh; /* Changed from height: 820px */
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  display: flex; /* Added to manage internal layout */
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -86,6 +88,8 @@
 /* Body */
 .modal-body {
   padding: 25px;
+  flex: 1; /* Added: takes up available space */
+  overflow-y: auto; /* Added: scrolls if content exceeds max-height */
 }
 
 /* Two-column row */
@@ -141,7 +145,9 @@
   display: flex;
   justify-content: flex-end;
   gap: 20px;
-  margin-top: 80px;
+  margin-top: 20px; /* Reduced from 80px */
+  padding: 20px; /* Added some breathing room */
+  border-top: 1px solid #eee; /* Optional: separates buttons from content */
 }
 
 /* Buttons */
@@ -175,13 +181,151 @@
 .save-btn:hover {
   background: #1d4ed8;
 }
-.time-input {
-  font-size: 1.2rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-align: center;
-  width: 200px;
+
+/* Image Table Styles */
+.images-table-container {
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
 }
-.personnel-input {
-  width: 500px;
+
+.images-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Arima", sans-serif;
+  font-size: 14px;
+}
+
+.images-table thead {
+  background: linear-gradient(to right, #1d49ab, #13318d);
+  color: white;
+  position: sticky;
+  top: 0;
+}
+
+.images-table th,
+.images-table td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.images-table th {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.images-table tbody tr:hover {
+  background: #f3f4f6;
+}
+
+.images-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.image-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid #d1d5db;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+}
+
+.image-thumbnail:hover {
+  transform: scale(1.1);
+  border-color: #2563eb;
+}
+
+.image-name {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.view-btn,
+.remove-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: "Arima", sans-serif;
+  margin: 0 3px;
+  transition: background 0.2s;
+}
+
+.view-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.view-btn:hover {
+  background: #1d4ed8;
+}
+
+.remove-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+/* Full Image Preview Modal */
+.image-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.image-preview-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.full-preview-image {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+.preview-close-btn {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.preview-close-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
 }

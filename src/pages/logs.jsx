@@ -21,8 +21,6 @@ function Logs() {
     end: null,
   });
 
-  // CALENDAR CONST
-
   const months = [
     "January",
     "February",
@@ -146,8 +144,6 @@ function Logs() {
     );
   };
 
-  //FILTER CONST
-
   const applyFilter = () => {
     if (selectedRange.start && selectedRange.end) {
       const start = selectedRange.start;
@@ -209,12 +205,7 @@ function Logs() {
     return matchesKeyword && matchesDate;
   });
 
-  const clearDate = () => {
-    setSearchDate("");
-    setSelectedRange({ start: null, end: null });
-  };
-
-  // LOGS PER DAY ENTRY CONST
+  // ... after filteredLogs definition ...
 
   const groupedLogs = filteredLogs.reduce((groups, log) => {
     const date = new Date(log.timestamp).toLocaleDateString("en-US", {
@@ -231,18 +222,29 @@ function Logs() {
     return groups;
   }, {});
 
+  // Convert the object into an array of entries for pagination
   const dateEntries = Object.entries(groupedLogs);
+
+  // Define items per page
   const itemsPerPage = 3;
+
+  // Calculate indices for slicing the date entries
   const indexOfLastDate = currentPage * itemsPerPage;
   const indexOfFirstDate = indexOfLastDate - itemsPerPage;
+
+  // Slice the grouped date entries for display
   const currentDateEntries = dateEntries.slice(
     indexOfFirstDate,
     indexOfLastDate,
   );
+
   // Calculate total pages based on number of grouped days
   const totalPages = Math.ceil(dateEntries.length / itemsPerPage);
 
-  // BACKEND FETCH LOGS LOGIC
+  const clearDate = () => {
+    setSearchDate("");
+    setSelectedRange({ start: null, end: null });
+  };
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -256,9 +258,7 @@ function Logs() {
     };
 
     fetchLogs();
-  }, [location.pathname]);
-
-  // LAYOUT AND UI LOGIC
+  }, [location.pathname]); // refetch when navigating
 
   return (
     <div className="logs-page">
@@ -311,7 +311,7 @@ function Logs() {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(1); // Reset to page 1 on search
               }}
             />
           </div>
@@ -409,10 +409,7 @@ function Logs() {
           </div>
         </div>
 
-        <div className="logs-count">
-          Showing {dateEntries.length}{" "}
-          {dateEntries.length === 1 ? "day" : "days"} of logs
-        </div>
+        <div className="logs-count">Showing {filteredLogs.length} logs</div>
 
         <div className="logs-list">
           {currentDateEntries.map(([dateString, logsInDay]) => {
@@ -472,16 +469,9 @@ function Logs() {
                       )}
                     </div>
                   </div>
+                  
 
                   <div className="log-details">
-                    {/* Show a day table/summary */}
-                    <strong>Daily Log Summary</strong>
-                    <p>
-                      Activity recorded by:{" "}
-                      {[...new Set(logsInDay.map((l) => l.initials))].join(
-                        ", ",
-                      )}
-                    </p>
                     <button
                       className="view-table-btn"
                       onClick={() =>
@@ -542,7 +532,6 @@ function Logs() {
           </button>
         </div>
       </div>
-
       <LogModal
         isOpen={!!selectedDayLogs}
         onClose={() => setSelectedDayLogs(null)}
