@@ -469,16 +469,9 @@ function Logs() {
                       )}
                     </div>
                   </div>
+                  
 
                   <div className="log-details">
-                    {/* Show a summary or just the button */}
-                    <strong>Daily Log Summary</strong>
-                    <p>
-                      Activity recorded by:{" "}
-                      {[...new Set(logsInDay.map((l) => l.initials))].join(
-                        ", ",
-                      )}
-                    </p>
                     <button
                       className="view-table-btn"
                       onClick={() =>

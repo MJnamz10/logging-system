@@ -133,21 +133,6 @@ const LogModal = ({ isOpen, onClose, data }) => {
 
             {/* RIGHT: Status Badge + Back Arrow */}
             <div className="header-right">
-              {/* STATUS BADGE: Shows log open/closed status */}
-              <div className="log-status-badge">
-                {/* STATUS INDICATOR: Green pulsing dot to show active/open status */}
-                <div className="status-indicator"></div>
-                <div className="status-text">
-                  <span className="status-label">LOG STATUS</span>
-                  {/* STATUS VALUE: Currently hardcoded as "OPEN" - could be dynamic based on log state */}
-                  <span className="status-value">OPEN</span>
-                </div>
-              </div>
-              {/* 
-                BACK ARROW BUTTON
-                ACTION: Closes the modal and returns to logs page
-                TRIGGER: onClick event
-              */}
               <button className="back-arrow" onClick={onClose}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M19 12H5M12 19l-7-7 7-7"/>

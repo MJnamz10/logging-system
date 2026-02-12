@@ -41,7 +41,7 @@
 
 /* ==================== HEADER (single unified blue block) ==================== */
 .log-modal-header {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b5fe0 60%, #5b6de8 100%);
+  background: linear-gradient(to right, #1D49AB, #13318D);
   padding: 20px 32px 20px 32px;
   display: flex;
   flex-direction: column;
@@ -80,7 +80,8 @@
 }
 
 .header-title-group h2 {
-  font-size: 1.25rem;
+  font-size: 28px;
+  font-family: "Arima", sans-serif;
   color: white;
   margin: 0;
   font-weight: 700;
@@ -88,22 +89,23 @@
 }
 
 .header-subtitle {
-  font-size: 0.8rem;
+  font-size: 20px;
+  font-family: "Arima", sans-serif;
   color: rgba(255, 255, 255, 0.75);
-  margin: 2px 0 0 0;
+  margin: 8px 0 0 0;
 }
 
 /* Center: search bar */
 .header-search {
   flex: 1;
-  max-width: 560px;
-  position: relative;
-  margin: 0 auto;
+  width: 400px;
+  position: fixed;
+  margin-left: 900px;
 }
 
 .header-search .search-icon {
   position: absolute;
-  left: 14px;
+  left: 1px;
   top: 50%;
   transform: translateY(-50%);
   width: 18px;
@@ -142,44 +144,6 @@
   flex-shrink: 0;
 }
 
-/* Status Badge */
-.log-status-badge {
-  background: white;
-  padding: 10px 18px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.status-indicator {
-  width: 14px;
-  height: 14px;
-  background: #22c55e;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.status-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.status-label {
-  font-size: 0.6rem;
-  color: #6b7280;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  line-height: 1.2;
-}
-
-.status-value {
-  font-size: 1rem;
-  color: #22c55e;
-  font-weight: 700;
-  line-height: 1.2;
-}
 
 /* Back arrow button (top-right) */
 .back-arrow {
