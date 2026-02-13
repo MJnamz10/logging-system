@@ -1,4 +1,4 @@
-.dashboard-page {
+.summary-page {
   width: 100%;
   min-height: 100vh;
   background-color: #f8fafc;
@@ -6,7 +6,7 @@
   position: fixed;
 }
 /* ===== DASHBOARD CONTAINER ===== */
-.dashboard-page .dashboard-container {
+.summary-page .dashboard-container {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -15,9 +15,8 @@
   padding: 20px;
   background-color: #fff;
   border-right: 2px solid #e5e7eb;
-  z-index: 1000; 
 }
-.dashboard-page .dash-header {
+.summary-page .sum-header {
   width: 100%;
   height: 100px;
   background-color: #fff;
@@ -98,6 +97,7 @@
   font-family: "Inter", sans-serif;
   cursor: pointer;
   transition: background-color 0.2s;
+  z-index: 1010;
 }
 .dash-options .item:hover {
   background-color: #efefef;
@@ -270,18 +270,18 @@
   border: 1pt solid black;
   cursor: pointer;
 }
-.entry-container {
+.entry-container1 {
   width: 1150px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border: 1pt solid #e5e7eb;
   background-color: white;
   position: relative;
-  bottom: 130px;
+  bottom: 250px;
   left: 340px;
-  height: 650px;
+  height: 800px;
 }
-.table-container {
+.table-container1 {
   width: 1150px;
   border: 1pt solid #e5e7eb;
   background-color: white;
@@ -289,7 +289,7 @@
   bottom: 0px;
   left: 0px;
   height: auto;
-  max-height: 530px; /* or whatever height fits your layout */
+  max-height: 680px; /* or whatever height fits your layout */
   overflow-y: auto; /* vertical scrollbar if content exceeds */
   overflow-x: auto; /* hide horizontal scroll (optional) */
 }
@@ -304,12 +304,12 @@
   top: 30px;
   color: white;
 }
-.entry-text2 {
+.entry-text3 {
   font-size: 18px;
   position: relative;
   top: 30px;
   font-weight: 500;
-  right: 131px;
+  right: 195px;
   color: #dbeafe;
 }
 .quick-actions .quick-text {
@@ -469,10 +469,6 @@
   font-size: 20px;
   font-weight: normal;
   font-family: "Arimo", sans-serif;
-  text-align: justify;
-}
-.texts-two .remarks{
-  text-align: justify;
 }
 
 .table-header .search-input {
@@ -875,4 +871,3 @@
   border-radius: 8px;
   box-shadow: 0 0 10px #000;
 }
-

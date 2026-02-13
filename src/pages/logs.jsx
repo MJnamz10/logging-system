@@ -288,6 +288,13 @@ function Logs() {
             <img src={log} alt="icon" className="dash-icon" />
             <h className="logs">Logs</h>
           </div>
+           <div
+            className={location.pathname === "/summary" ? "active-item" : "item"}
+            onClick={() => navigate("/summary")}
+          >
+            <img src={log} alt="icon" className="dash-icon" />
+            <h className="logs">Summary</h>
+          </div>
         </div>
       </div>
 
@@ -409,7 +416,7 @@ function Logs() {
           </div>
         </div>
 
-        <div className="logs-count">Showing {filteredLogs.length} logs</div>
+        <div className="logs-count">Showing {dateEntries.length} logs</div>
 
         <div className="logs-list">
           {currentDateEntries.map(([dateString, logsInDay]) => {

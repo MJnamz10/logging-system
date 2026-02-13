@@ -2,7 +2,6 @@
   width: 100%;
   min-height: 100vh;
   background-color: #f8fafc;
-  background-color: #f8fafc;
   display: flex;
   position: fixed;
 }
@@ -16,7 +15,7 @@
   padding: 20px;
   background-color: #fff;
   border-right: 2px solid #e5e7eb;
-  z-index: 10;
+  z-index: 1000;
 }
 .logs-page .logs-header {
   width: 100%;
@@ -640,3 +639,5 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+

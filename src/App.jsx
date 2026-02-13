@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/login.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Logs from "./pages/logs.jsx";
+import Summary from "./pages/summary.jsx";
 
 /* ============================================================
    APP COMPONENT - Main Application Entry Point
@@ -72,6 +73,15 @@ function App() {
         
         {/* Logs Page - Read-only view */}
         <Route path="/logs" element={<Logs latestLogs={latestLogs} />} />
+         <Route
+          path="/summary"
+          element={
+            <Summary
+              latestLogs={latestLogs}
+              setLatestLogs={setLatestLogs}
+            />
+          }
+        />
       </Routes>
     </Router>
   );

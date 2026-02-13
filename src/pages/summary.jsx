@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import logo from "../assets/CAAP_Logo.png";
 import home from "../assets/home.png";
 import logIcon from "../assets/Mask group.png";
-import clock from "../assets/clock-bold.svg";
-import add from "../assets/add.png";
-import exp from "../assets/export.png";
 import search from "../assets/search-icon.png";
-import del from "../assets/delete.png";
-import edit from "../assets/edit.png";
-import "../css/dashboard.css";
+import "../css/summary.css";
 import AddLogEntryModal from "./AddLogEntryModal";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -16,14 +11,14 @@ import { useLocation, useNavigate } from "react-router-dom";
    DASHBOARD COMPONENT
    Main dashboard page with log entries table and quick actions
 ============================================================ */
-function Dashboard({ latestLogs, setLatestLogs }) {
+function Summary({ latestLogs, setLatestLogs }) {
   const location = useLocation();
   const navigate = useNavigate();
 
   /* ----------------------------------------------------------
      STATE VARIABLES
   ---------------------------------------------------------- */
-  const [dateTime, setDateTime] = useState(new Date()); // Current date/time for clock
+
   const [showAddLog, setShowAddLog] = useState(false); // Toggle Add Log modal
   const [editingLog, setEditingLog] = useState(null); // Log being edited (null = not editing)
   const [searchTerm, setSearchTerm] = useState(""); // Search filter text
@@ -32,34 +27,11 @@ function Dashboard({ latestLogs, setLatestLogs }) {
   /* ----------------------------------------------------------
      EFFECT: Real-time clock update (every second)
   ---------------------------------------------------------- */
-  useEffect(() => {
-    const timer = setInterval(() => setDateTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   /* ----------------------------------------------------------
      ACTION: Export logs as PDF
      Downloads all logs as a formatted PDF document
   ---------------------------------------------------------- */
- const handleExportPdf = async () => {
-  const today = new Date().toISOString().slice(0, 10); // e.g., "2026-02-13"
-
-  // Pass both `from` and `to` as today
-  const response = await fetch(
-    `http://localhost:5000/logs/export/pdf?from=${today}&to=${today}`
-  );
-
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `logs-${today}.pdf`;
-  a.click();
-  window.URL.revokeObjectURL(url);
-};
-
-
   /* ----------------------------------------------------------
      ACTION: Add new log entry
      Sends new log to backend and updates local state with response
@@ -138,38 +110,12 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       console.error("Network error:", error);
     }
   };
-
-  /* ----------------------------------------------------------
-     ACTION: Delete log entry
-     Removes log from backend and local state after confirmation
-     - id: ID of the log entry to delete
-  ---------------------------------------------------------- */
-  const handleDeleteLog = async (id) => {
-    if (!window.confirm("Delete this log entry?")) return;
-
-    await fetch(`http://localhost:5000/logs/${id}`, {
-      method: "DELETE",
-    });
-
-    // Remove from local state
-    setLatestLogs((prev) => prev.filter((log) => log.id !== id));
-  };
-
   /* ----------------------------------------------------------
      COMPUTED: Filtered and sorted logs
      - Sorts by timestamp (oldest to newest)
      - Filters by search term (time, initials, or remarks)
   ---------------------------------------------------------- */
-  const todayUTC = new Date();
   const filteredLogs = [...latestLogs]
-    .filter((log) => {
-      const logDate = new Date(log.timestamp);
-      return (
-        logDate.getUTCFullYear() === todayUTC.getUTCFullYear() &&
-        logDate.getUTCMonth() === todayUTC.getUTCMonth() &&
-        logDate.getUTCDate() === todayUTC.getUTCDate()
-      );
-    })
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
     .filter((log) => {
       if (!searchTerm.trim()) return true;
@@ -184,8 +130,8 @@ function Dashboard({ latestLogs, setLatestLogs }) {
      RENDER: Main Dashboard Layout
   ============================================================ */
   return (
-    <div className="dashboard-page">
-      <div className="dash-header"></div>
+    <div className="summary-page">
+      <div className="sum-header"></div>
 
       <div className="dashboard-container">
         {/* ------ Logo and Title ------ */}
@@ -226,60 +172,13 @@ function Dashboard({ latestLogs, setLatestLogs }) {
             <h className="logs">Summary</h>
           </div>
 
-          {/* ====== HEADER WITH CLOCK ====== */}
-          <div className="header-container">
-            <h className="header-title">Air Navigation Service</h>
-            <div className="datetime-container">
-              <img src={clock} alt="clock" className="clock-icon" />
-              <span className="datetime-single">
-                {dateTime.toLocaleTimeString("en-GB", {
-                  timeZone: "UTC",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}{" "}
-                {dateTime.toLocaleDateString("en-US", {
-                  timeZone: "UTC",
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </span>
-            </div>
-          </div>
-
-          {/* ====== QUICK ACTIONS BUTTONS ====== */}
-          <div className="quick-actions">
-            <h className="quick-text">Quick Actions</h>
-            <div className="actions-items">
-              {/* Add Log Entry Button */}
-              <button className="action" onClick={() => setShowAddLog(true)}>
-                <p className="action-text1">Add Log Entry</p>
-                <p className="action-text2">Record a new event or note</p>
-                <div className="add-container">
-                  <img src={add} alt="add" className="add-icon" />
-                </div>
-              </button>
-
-              {/* Export PDF Button */}
-              <button className="action" onClick={handleExportPdf}>
-                <p className="action-text1">Export PDF</p>
-                <p className="action-text2">Download log as PDF report</p>
-                <div className="export-container">
-                  <img src={exp} alt="export" className="export-icon" />
-                </div>
-              </button>
-            </div>
-          </div>
-
           {/* ====== LOG ENTRIES TABLE ====== */}
-          <div className="entry-container">
+          <div className="entry-container1">
             {/* Table Header with search */}
             <div className="table-header">
               <h className="entry-text">
-                Log Entries
-                <span className="entry-text2">Air Navigation Force</span>
+                Overall Summary
+                <span className="entry-text3">Air Navigation Force</span>
               </h>
               <div className="viewlogs-icon-container">
                 <svg
@@ -335,7 +234,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
             </div>
 
             {/* Table Body - Log Entries List */}
-            <div className="table-container">
+            <div className="table-container1">
               {filteredLogs.length > 0 ? (
                 <table className="logs-table">
                   <thead>
@@ -346,7 +245,6 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                       <th>Initials</th>
                       <th>Remarks</th>
                       <th>Image</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -363,7 +261,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                         </td>
                         <td>{log.timeUTC}</td>
                         <td>{log.initials}</td>
-                        <td className="remarks">{log.remarks}</td>
+                        <td>{log.remarks}</td>
                         <td className="image-cell">
                           {(() => {
                             if (!log.images)
@@ -419,24 +317,6 @@ function Dashboard({ latestLogs, setLatestLogs }) {
                             </div>
                           )}
                         </td>
-                        {/* Actions Column - Edit & Delete */}
-                        <td className="actions-icons">
-                          <button
-                            className="icon-btn edit-btn"
-                            onClick={() => setEditingLog(log)}
-                            title="Edit log"
-                          >
-                            <img src={edit} alt="edit" />
-                          </button>
-
-                          <button
-                            className="icon-btn delete-btn"
-                            onClick={() => handleDeleteLog(log.id)}
-                            title="Delete log"
-                          >
-                            <img src={del} alt="delete" />
-                          </button>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -466,4 +346,4 @@ function Dashboard({ latestLogs, setLatestLogs }) {
   );
 }
 
-export default Dashboard;
+export default Summary;

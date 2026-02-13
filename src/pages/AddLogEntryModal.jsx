@@ -27,6 +27,8 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
   const [remarks, setRemarks] = useState(initialData?.remarks || "");
   const [images, setImages] = useState(getInitialImages);
   const [previewImage, setPreviewImage] = useState(null);
+  const [daysup, setDay] = useState(initialData?.daysup || "");
+  const [nightsup, setNight] = useState(initialData?.nightsup || "");
 
   const fileInputRef = useRef(null);
 
@@ -72,7 +74,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-   const handleTimeChange = (e) => {
+  const handleTimeChange = (e) => {
     let val = e.target.value.replace(/\D/g, "");
 
     if (val.length >= 3) {
@@ -100,6 +102,8 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
       timeUTC,
       initials,
       remarks,
+      daysup,
+      nightsup,
       images: JSON.stringify(images),
       timestamp: initialData?.timestamp || new Date().toISOString(),
     };
@@ -131,14 +135,15 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
           <div className="row">
             <div className="field">
               <label>Time *</label>
-              <input className="time-input"
+              <input
+                className="time-input"
                 type="text"
                 required
                 placeholder="00:00"
                 value={timeUTC}
                 onChange={handleTimeChange}
                 maxLength="5"
-                inputMode="numeric" 
+                inputMode="numeric"
               />
             </div>
             <div className="field">
@@ -151,7 +156,25 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
               />
             </div>
           </div>
+          <div className="row2">
+            <div className="field2">
+              <label>Day Shift Supervisor </label>
+              <input
+                type="text"
+                value={daysup}
+                onChange={(e) => setDay(e.target.value)}
+              />
+            </div>
 
+            <div className="field2">
+            <label>Eve-Mid Shift Supervisor </label>
+            <input
+              type="text"
+              value={nightsup}
+              onChange={(e) => setNight(e.target.value)}
+            />
+          </div>
+          </div>
           <div className="field">
             <label>Entry Remarks *</label>
             <textarea

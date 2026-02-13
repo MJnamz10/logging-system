@@ -88,7 +88,7 @@ app.get("/logs", (req, res) => {
    Body: { timeUTC, initials, remarks, images (JSON string) }
 ========================= */
 app.post("/logs", (req, res) => {
-  const { timeUTC, initials, remarks, images } = req.body;
+  const { timeUTC, initials, remarks, images, daysup, nightsup } = req.body;
   const timestamp = new Date().toISOString();
 
   // Validate required fields
@@ -102,11 +102,11 @@ app.post("/logs", (req, res) => {
   console.log("Saving log with images:", imagesJson ? "YES" : "NO"); // Debug log
 
   const sql = `
-    INSERT INTO logs (timeUTC, initials, remarks, timestamp, images)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO logs (timeUTC, initials, remarks, timestamp, images, daysup, nightsup)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [timeUTC, initials, remarks, timestamp, imagesJson], function (err) {
+  db.run(sql, [timeUTC, initials, remarks, timestamp, imagesJson, daysup, nightsup], function (err) {
     if (err) {
       console.error("Error inserting log:", err.message);
       return res.status(500).json({ message: "Failed to save log entry" });
@@ -120,6 +120,8 @@ app.post("/logs", (req, res) => {
       remarks,
       timestamp,
       images: imagesJson,
+      daysup,
+      nightsup
     };
     
     console.log("Log saved successfully with ID:", this.lastID); // Debug log
@@ -162,6 +164,11 @@ app.get("/logs/export/pdf", (req, res) => {
       console.error("Error fetching logs for PDF:", err.message);
       return res.status(500).json({ message: "Failed to export logs" });
     }
+    const firstDayRecord = rows.find(r => r.daysup && String(r.daysup).trim() !== "");
+    const firstNightRecord = rows.find(r => r.nightsup && String(r.nightsup).trim() !== "");
+
+    const lockedDayName = firstDayRecord ? firstDayRecord.daysup.toUpperCase() : "";
+    const lockedNightName = firstNightRecord ? firstNightRecord.nightsup.toUpperCase() : "";
 
     // Tell browser it's a PDF download/preview
     res.setHeader("Content-Type", "application/pdf");
@@ -175,21 +182,20 @@ app.get("/logs/export/pdf", (req, res) => {
 
     // ====== Constants ======
     const PAGE_W = 595;
-    const left = 20;
+    const left = 25;
     const right = PAGE_W - 20;
-    const pageTop = 30;
-    const CELL_PAD = 4;          // padding inside each cell
+    const pageTop = 116;
+    const CELL_PAD = 2;          // padding inside each cell
     const ROW_H = 16;            // FIXED row-line height (like ruled paper)
-    const SIGNATURE_SPACE = 120; // space reserved for signatures on last page
-    const PAGE_BOTTOM = 790;     // usable bottom of A4
-
+    const SIGNATURE_SPACE = 20; // space reserved for signatures on last page
+    const PAGE_BOTTOM = 842;     // usable bottom of A4
     // Column X positions
     const xDate = left;
-    const xTime = left + 50;
+    const xTime = left + 60;
     const xRemarks = left + 100;
-    const xInitials = right - 100;
+    const xInitials = right - 90;
     const xEnd = right;
-    const headerH = 16;
+    const headerH = 0;
     const remarksW = xInitials - xRemarks - 2 * CELL_PAD; // available text width for remarks
 
     let pageNum = 0;  // track pages for continuation label
@@ -223,7 +229,7 @@ app.get("/logs/export/pdf", (req, res) => {
     // Works like writing on lined paper — fills a line, then continues on the next.
     const splitTextIntoLines = (text) => {
       if (!text || text.trim() === "") return [""];
-      doc.font("Helvetica").fontSize(8);
+      doc.font("Helvetica").fontSize(10);
 
       const words = text.split(/\s+/);
       const lines = [];
@@ -246,64 +252,73 @@ app.get("/logs/export/pdf", (req, res) => {
       return lines.length > 0 ? lines : [""];
     };
 
+    
     // ====== Draw page header + table header ======
     const drawPageHeader = () => {
       pageNum++;
 
-      doc.font("Helvetica").fontSize(9);
-      doc.text("Republic of the Philippines", left, pageTop, {
-        align: "center",
-        width: right - left,
+     doc.font("Helvetica").fontSize(9);
+     doc.text("", left, pageTop, {
+       align: "center",
+     width: right - left,
       });
-      doc.text("Department of Transportation and Communications", {
+      doc.text("", {
         align: "center",
       });
 
-      doc.font("Helvetica-Bold").fontSize(10);
-      doc.text("CIVIL AVIATION AUTHORITY OF THE PHILIPPINES", {
-        align: "center",
+     doc.font("Helvetica-Bold").fontSize(10);
+      doc.text("", {
+        align: "justified",
       });
-      doc.text("AIR NAVIGATION SERVICE", { align: "center" });
-
+      doc.text("", { align: "center" });
+      
       doc.moveDown(1);
 
       // Facility / Month-Year lines
       let y = doc.y + 8;
-      const lineGap = 6;
-      doc.font("Helvetica").fontSize(9);
-      doc.text("FACILITY:", left, y);
-      doc
+      const lineGap = 8;
+      doc.font("Helvetica").fontSize(12);
+      doc.text("LAGUINDINGAN CNF", left + 60, y);
+      /*doc
         .moveTo(left + 41, y + lineGap)
         .lineTo(left + 200, y + lineGap)
-        .stroke();
-
-      doc.text("MONTH/YEAR:", left + 380, y);
-      doc
+        .stroke(0);*/
+      
+      doc.text("", left + 380, y);
+      /*doc
         .moveTo(left + 443, y + lineGap)
         .lineTo(right, y + lineGap)
-        .stroke();
+        .stroke();*/
+
+         const monthYear = new Date().toLocaleDateString("en-GB", {
+        month: "long",
+        year: "numeric",
+      });
+      
+      doc.font("Helvetica").fontSize(12);
+        doc.text(monthYear, left + 455, y);
 
       if (facility) {
-        doc.font("Helvetica").fontSize(9);
+        doc.font("Helvetica").fontSize(12);
         doc.text(String(facility), left + 60, y, { width: 190 });
       }
 
       // Title
       y += 28;
       doc.font("Helvetica-Bold").fontSize(10);
-      doc.text("DAILY MAINTENANCE LOG", left, y, {
+      doc.text("", left, y, {
         width: right - left,
         align: "center",
       });
 
       // Continuation label for pages after the first
       if (pageNum > 1) {
-        doc.font("Helvetica").fontSize(8);
-        doc.text(`(Continuation - Page ${pageNum})`, left, y + 12, {
+        doc.font("Helvetica").fontSize(10);
+        /*doc.text(`(Continuation - Page ${pageNum})`, left, y + 12, {
           width: right - left,
           align: "center",
         });
-        y += 12;
+        y += 12;*/
       }
 
       // Table column headers
@@ -312,20 +327,20 @@ app.get("/logs/export/pdf", (req, res) => {
 
       drawHLine(y, 1.0);
 
-      doc.font("Helvetica-Bold").fontSize(9);
-      doc.text("Date", xDate, y + 4, {
+      doc.font("Helvetica-Bold").fontSize(10);
+      doc.text("", xDate, y + 4, {
         width: xTime - xDate,
         align: "center",
       });
-      doc.text("Time", xTime, y + 4, {
+      doc.text("", xTime, y + 4, {
         width: xRemarks - xTime,
         align: "center",
       });
-      doc.text("REMARKS", xRemarks, y + 4, {
+      doc.text("", xRemarks, y + 4, {
         width: xInitials - xRemarks,
         align: "center",
       });
-      doc.text("Initials", xInitials, y + 4, {
+      doc.text("", xInitials, y + 4, {
         width: xEnd - xInitials,
         align: "center",
       });
@@ -334,64 +349,64 @@ app.get("/logs/export/pdf", (req, res) => {
 
       curY = y + headerH;
     };
+    console.log("curY:", curY);
+console.log("curY + 120:", curY + 120);
 
     // ====== Draw signatures (only on the last page) ======
+    // ====== Draw signatures (only on the last page) ======
     const drawSignatures = () => {
-      // Close vertical lines for current page table
-      drawTableVerticals(tableTopOnPage, curY);
-
-      const sigY = Math.max(curY + 30, 730);
-      const lineW = 132;
-      const labelGap = 1;
+      const sigY = curY + 40;
+      const lineW = 160; 
+      const labelGap = 2;   
+      const nameGap = 12;   
       const xL = left;
       const xR = right - lineW;
 
-      // DAY SHIFT SUPERVISOR
-      doc
-        .moveTo(xR, sigY)
-        .lineTo(xR + lineW, sigY)
-        .stroke();
-      doc.font("Helvetica").fontSize(9);
-      doc.text("DAY SHIFT SUPERVISOR", xR, sigY + labelGap, {
-        width: lineW,
-        align: "center",
-      });
+      doc.font("Helvetica-Bold").fontSize(10);
 
-      // EVE-MID SHIFT SUPERVISOR
-      const sigY2 = sigY + 45;
-      doc
-        .moveTo(xR, sigY2)
-        .lineTo(xR + lineW, sigY2)
-        .stroke();
-      doc.font("Helvetica").fontSize(9);
-      doc.text("EVE-MID SHIFT SUPERVISOR", xR, sigY2 + labelGap, {
-        width: lineW,
-        align: "center",
-      });
+      // --- DAY SHIFT SUPERVISOR ---
+      // Uses the locked name found at the start of the process
+      if (lockedDayName) {
+          doc.text(lockedDayName, xR, sigY - nameGap, { width: lineW, align: "center" });
+      }
+      doc.moveTo(xR, sigY).lineTo(xR + lineW, sigY);
+      doc.font("Helvetica").fontSize(10);
+      doc.text("", xR, sigY + labelGap, { width: lineW, align: "center" });
 
-      // FACILITY IN CHARGE
-      doc
-        .moveTo(xL, sigY2)
-        .lineTo(xL + lineW, sigY2)
-        .stroke();
-      doc.font("Helvetica").fontSize(9);
-      doc.text("FACILITY IN CHARGE", xL, sigY2 + labelGap, {
-        width: lineW,
-        align: "center",
-      });
+      // --- EVE-MID SHIFT SUPERVISOR ---
+      // Even if Day was found in row 1 and Night in row 20, they display together here
+      const sigY_Night = sigY + 45;
+      doc.font("Helvetica-Bold").fontSize(10);
+      if (lockedNightName) {
+          doc.text(lockedNightName, xR, sigY_Night - nameGap, { width: lineW, align: "center" });
+      }
+      doc.moveTo(xR, sigY_Night).lineTo(xR + lineW, sigY_Night);
+      doc.font("Helvetica").fontSize(10);
+      doc.text("", xR, sigY_Night + labelGap, { width: lineW, align: "center" });
+
+      // --- FACILITY IN CHARGE ---
+      doc.font("Helvetica-Bold").fontSize(10);
+      doc.text("GERALDMIL M. PANGAN", xL, sigY_Night - nameGap, { width: lineW, align: "center" });
+      doc.moveTo(xL, sigY_Night).lineTo(xL + lineW, sigY_Night);
+      doc.font("Helvetica").fontSize(10);
+      doc.text("", xL, sigY_Night + labelGap, { width: lineW, align: "center" });
     };
 
     // ====== Start a new continuation page ======
     const startNewPage = () => {
-      // Close vertical lines on the current page before moving on
+      // Close vertical lines of current table
       drawTableVerticals(tableTopOnPage, curY);
+
+      // Add new page
       doc.addPage();
+
+      // Draw header again
       drawPageHeader();
     };
 
     // How many fixed lines remain on the current page
-    const linesRemainingOnPage = (isLastEntry) => {
-      const bottom = isLastEntry ? PAGE_BOTTOM - SIGNATURE_SPACE : PAGE_BOTTOM;
+    const linesRemainingOnPage = () => {
+      const bottom = PAGE_BOTTOM - SIGNATURE_SPACE
       return Math.floor((bottom - curY) / ROW_H);
     };
 
@@ -407,56 +422,42 @@ app.get("/logs/export/pdf", (req, res) => {
       const remarkLines = splitTextIntoLines(remarksText);
 
       // If not even one line fits, go to a new page
-      if (linesRemainingOnPage(isLastEntry) < 1) {
+      if (curY + ROW_H > PAGE_BOTTOM - 120) {
         startNewPage();
       }
 
+
       // Format date and time
-      const d = new Date(log.timestamp);
-      const dateStr = d.toISOString().slice(0, 10);
-      const timeStr = d.toLocaleTimeString("en-GB", {
+      const displayTime = log.timeUTC || (log.timestamp ? new Date(log.timestamp).toLocaleTimeString("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
-      });
+      }) : "");
 
-      // --- Draw Date, Time, Initials on the FIRST line only ---
-      doc.font("Helvetica").fontSize(8);
+      const d = new Date(log.timestamp);
+      const dateStr = d.toISOString().slice(0, 10);
 
-      doc.text(dateStr, xDate, curY + CELL_PAD, {
-        width: xTime - xDate,
-        align: "center",
-      });
+      // Draw Date, Time, and Initials on the first line of this log entry
+      doc.font("Helvetica").fontSize(9);
+      doc.text(dateStr, xDate + 6, curY + CELL_PAD,  { width: 50, align: "center",   lineBreak: false });
+      doc.text(displayTime, xTime - 5, curY + CELL_PAD, { width: 50, align: "center" });
+      doc.text(log.initials || "", xInitials, curY + CELL_PAD, { width: xEnd - xInitials, align: "center" });
 
-      doc.text(timeStr, xTime, curY + CELL_PAD, {
-        width: xRemarks - xTime,
-        align: "center",
-      });
-
-      doc.text(log.initials || "", xInitials, curY + CELL_PAD, {
-        width: xEnd - xInitials,
-        align: "center",
-      });
-
-      // --- Draw Remarks line by line on each ruled line ---
-      // Each piece of text sits on its own fixed-height ruled line.
-      // Line 1 has the text that fits, line 2 has the overflow, etc.
-      for (let r = 0; r < remarkLines.length; r++) {
-        // Page break check for continuation lines (line 0 already checked above)
-        if (r > 0 && linesRemainingOnPage(isLastEntry) < 1) {
-          startNewPage();
+      // Draw Remarks line by line
+      remarkLines.forEach((line, rIdx) => {
+        // If remarks overflow to a new page, handle the break
+        if (rIdx > 0 && linesRemainingOnPage() < 1) {
+            startNewPage();
         }
 
-        doc.font("Helvetica").fontSize(8);
-        doc.text(remarkLines[r], xRemarks + CELL_PAD, curY + CELL_PAD, {
-          width: remarksW,
-          align: "center",
-          lineBreak: false,
+        doc.text(line, xRemarks + CELL_PAD + 10, curY + CELL_PAD, { 
+            width: remarksW, 
+            align: "justified",
+            lineBreak: false 
         });
-
-        // Advance to next ruled line and draw horizontal line
+        
         curY += ROW_H;
-        drawHLine(curY, 0.8);
-      }
+        drawHLine(curY);
+      });
     }
 
     // If no rows at all, still show empty ruled lines
@@ -466,9 +467,16 @@ app.get("/logs/export/pdf", (req, res) => {
         drawHLine(curY, 0.8);
       }
     }
+   const requiredSignatureSpace = 120;
 
-    // ====== Draw signatures on the final page ======
+    if (curY + requiredSignatureSpace > PAGE_BOTTOM) {
+      doc.addPage();
+      drawPageHeader();
+    }
+
+    drawTableVerticals(tableTopOnPage, curY);
     drawSignatures();
+
 
     doc.end();
   });
@@ -517,7 +525,7 @@ app.get("/debug/routes", (req, res) => {
 ========================= */
 app.put("/logs/:id", (req, res) => {
   const { id } = req.params;
-  const { timeUTC, initials, remarks, images } = req.body;
+  const { timeUTC, initials, remarks, images, daysup, nightsup } = req.body;
 
   // Debug: Log incoming request
   console.log("PUT Request - ID:", id, "Has images:", !!images);
@@ -530,9 +538,9 @@ app.put("/logs/:id", (req, res) => {
   // Ensure images is stored as JSON string
   const imagesJson = typeof images === 'string' ? images : JSON.stringify(images || []);
 
-  const sql = `UPDATE logs SET timeUTC = ?, initials = ?, remarks = ?, images = ? WHERE id = ?`;
+  const sql = `UPDATE logs SET timeUTC = ?, initials = ?, remarks = ?, images = ?, daysup = ?, nightsup = ? WHERE id = ?`;
 
-  db.run(sql, [timeUTC, initials, remarks, imagesJson, id], function (err) {
+  db.run(sql, [timeUTC, initials, remarks, imagesJson, daysup, nightsup, id], function (err) {
     if (err) {
       console.error("Database Error:", err.message);
       return res.status(500).json({ message: "Internal Server Error" });
@@ -544,7 +552,7 @@ app.put("/logs/:id", (req, res) => {
     }
 
     console.log("Successfully updated log ID:", id);
-    res.json({ id, timeUTC, initials, remarks, images: imagesJson });
+    res.json({ id, timeUTC, initials, remarks, images: imagesJson, daysup, nightsup });
   });
 });
 

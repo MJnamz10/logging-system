@@ -97,7 +97,10 @@
   display: flex;
   gap: 13px;
 }
-
+.row2 {
+  display: flex;
+  gap: 13px;
+}
 /* Form field */
 .field {
   display: flex;
@@ -106,6 +109,36 @@
   flex: 1;
 }
 
+
+.field2 {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+.field2 label {
+  padding-bottom: 8px;
+  font-size: 18px;
+  font-weight: normal;
+  font-family: "Arima", sans-serif;
+  margin-bottom: 4px;
+}
+
+.field2 input,
+.field2 textarea {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: "Arima", sans-serif;
+  font-size: 18px;
+}
+
+.field2 input:focus,
+.field2 textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+}
 .field label {
   padding-bottom: 8px;
   font-size: 18px;

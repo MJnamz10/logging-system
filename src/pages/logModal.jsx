@@ -128,13 +128,6 @@ const LogModal = ({ isOpen, onClose, data }) => {
                 <circle cx="11" cy="11" r="8"></circle>
                 <path d="m21 21-4.35-4.35"></path>
               </svg>
-              {/* 
-                SEARCH INPUT
-                ACTION: Real-time filtering of log entries
-                TRIGGER: onChange event on every keystroke
-                BEHAVIOR: Updates searchTerm state which triggers filteredLogs recalculation
-                SEARCHES: Both 'initials' and 'remarks' fields (case-insensitive)
-              */}
               <input
                 type="text"
                 placeholder="Search by initals or keywords..."
@@ -162,13 +155,7 @@ const LogModal = ({ isOpen, onClose, data }) => {
           {/* DATE ROW: Full weekday + date below the title */}
           <div className="header-date-row">
             {/* CLOCK ICON */}
-            <svg
-              className="clock-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
+            <svg className="clock-icons" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
@@ -176,7 +163,11 @@ const LogModal = ({ isOpen, onClose, data }) => {
             <span className="header-date">{fullDateString}</span>
           </div>
 
+
+
           {/* ENTRY COUNT ROW: Total entries count at bottom-left of header */}
+                   <div className="header-count-container">
+
           <div className="header-count-row">
             {/* 
               DYNAMIC COUNT DISPLAY
@@ -211,6 +202,8 @@ const LogModal = ({ isOpen, onClose, data }) => {
             </div>
           )}
         </div>
+                  </div>
+
 
         {/* ==================== TABLE SECTION ==================== */}
         <div className="log-modal-body">
@@ -243,8 +236,8 @@ const LogModal = ({ isOpen, onClose, data }) => {
                 return (
                   <tr key={log.id || i}>
                     {/* DATE COLUMN: Only show date on first row to avoid repetition */}
-                    <td className={i === 0 ? "date-col-bold" : "date-col"}>
-                      {i === 0 ? formattedDate : ""}
+                    <td className="date-col-bold">
+                      {formattedDate}
                     </td>
 
                     {/* TIME COLUMN: Shows time in HHMM format (from log.timeUTC) */}
