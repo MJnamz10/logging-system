@@ -32,7 +32,7 @@ const LogModal = ({ isOpen, onClose, data }) => {
     if (!searchTerm.trim()) return true;
     return (
       log.initials?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.remarks?.toLowerCase().includes(searchTerm.toLowerCase())
+       new RegExp(`\\b${searchTerm}\\b`, "i").test(log.remarks || "")
     );
   });
 

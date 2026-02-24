@@ -176,7 +176,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       return (
         log.timeUTC.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.initials.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.remarks.toLowerCase().includes(searchTerm.toLowerCase())
+        new RegExp(`\\b${searchTerm}\\b`, "i").test(log.remarks || "")
       );
     });
 
