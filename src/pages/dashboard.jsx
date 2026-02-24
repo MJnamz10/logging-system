@@ -460,6 +460,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
           }}
           onSave={editingLog ? handleUpdateLog : handleSaveLog}
           initialData={editingLog}
+          
         />
       )}
     </div>
