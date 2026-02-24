@@ -129,8 +129,9 @@ app.post("/logs", (req, res) => {
   });
 });
 
+
 /* =========================
-   EXPORT LOGS AS PDF
+   EXPORT LOGS AS PDF (DOCX-style table)
    GET /logs/export/pdf
 ========================= */
 app.get("/logs/export/pdf", (req, res) => {
@@ -143,6 +144,8 @@ app.get("/logs/export/pdf", (req, res) => {
   const params = [];
   const where = [];
 
+  // NOTE: only apply facility filter if your DB has a "facility" column.
+  // If you don't have it, REMOVE this block.
   if (facility) {
     where.push(`facility = ?`);
     params.push(facility);
@@ -164,43 +167,64 @@ app.get("/logs/export/pdf", (req, res) => {
       console.error("Error fetching logs for PDF:", err.message);
       return res.status(500).json({ message: "Failed to export logs" });
     }
-    const firstDayRecord = rows.find(r => r.daysup && String(r.daysup).trim() !== "");
-    const firstNightRecord = rows.find(r => r.nightsup && String(r.nightsup).trim() !== "");
 
-    const lockedDayName = firstDayRecord ? firstDayRecord.daysup.toUpperCase() : "";
-    const lockedNightName = firstNightRecord ? firstNightRecord.nightsup.toUpperCase() : "";
+    const firstDayRecord = rows.find(
+      (r) => r.daysup && String(r.daysup).trim() !== ""
+    );
+    const firstNightRecord = rows.find(
+      (r) => r.nightsup && String(r.nightsup).trim() !== ""
+    );
+
+    const lockedDayName = firstDayRecord
+      ? String(firstDayRecord.daysup).toUpperCase()
+      : "";
+    const lockedNightName = firstNightRecord
+      ? String(firstNightRecord.nightsup).toUpperCase()
+      : "";
 
     // Tell browser it's a PDF download/preview
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `inline; filename="daily-maintenance-log.pdf"`,
+      `inline; filename="daily-maintenance-log.pdf"`
     );
 
-    const doc = new PDFDocument({ size: "A4", margin: 36 });
+    const doc = new PDFDocument({ size: "A4", margin: 10 });
     doc.pipe(res);
 
-    // ====== Constants ======
-    const PAGE_W = 595;
-    const left = 25;
-    const right = PAGE_W - 20;
-    const pageTop = 116;
-    const CELL_PAD = 2;          // padding inside each cell
-    const ROW_H = 16;            // FIXED row-line height (like ruled paper)
-    const SIGNATURE_SPACE = 20; // space reserved for signatures on last page
-    const PAGE_BOTTOM = 842;     // usable bottom of A4
+    // ====== Layout constants ======
+    const PAGE_W = doc.page.width;  // ~595
+    const PAGE_H = doc.page.height; // ~842
+    const left = doc.page.margins.left;   // 36
+    const right = PAGE_W - doc.page.margins.right; // 559
+    const CELL_PAD = 2;
+    const PAGE_START_Y = 118; 
+
+    const ROW_H = 15.5;               // ruled line height
+    const SIGNATURE_SPACE = 0;    // reserved space on last page
+    const PAGE_BOTTOM = PAGE_H - doc.page.margins.bottom; // ~806
+
+    // Column widths (adjust if you want)
+    const wDate = 70;
+    const wTime = 55;
+    const wInitials = 70;
+    const wRemarks = (right - left) - (wDate + wTime + wInitials);
+
     // Column X positions
     const xDate = left;
-    const xTime = left + 60;
-    const xRemarks = left + 100;
-    const xInitials = right - 90;
+    const xTime = xDate + wDate;
+    const xRemarks = xTime + wTime;
+    const xInitials = xRemarks + wRemarks;
     const xEnd = right;
-    const headerH = 0;
-    const remarksW = xInitials - xRemarks - 2 * CELL_PAD; // available text width for remarks
+    const ROWS_PER_PAGE = 34;
 
-    let pageNum = 0;  // track pages for continuation label
-    let curY = 0;     // current Y cursor
-    let tableTopOnPage = 0; // where the table starts on the current page
+
+    // Derived
+    const remarksW = wRemarks - 2 * CELL_PAD;
+
+    let pageNum = 0;
+    let curY = 0;
+    let tableTopOnPage = 0;
 
     // ====== Drawing helpers ======
     const drawHLine = (y, w = 0.8) => {
@@ -213,7 +237,7 @@ app.get("/logs/export/pdf", (req, res) => {
     const drawVLine = (x, y1, y2, w = 0.8) => {
       doc.save();
       doc.lineWidth(w);
-      doc.moveTo(x, y1).lineTo(x, y2).stroke();
+      doc.moveTo(x, y1).lineTo(x, y2).stroke(); //.stroke()
       doc.restore();
     };
 
@@ -225,296 +249,231 @@ app.get("/logs/export/pdf", (req, res) => {
       drawVLine(xEnd, y1, y2, 1.0);
     };
 
-    // Split remarks into lines that each fit within the remarks column width.
-    // Works like writing on lined paper — fills a line, then continues on the next.
-    const splitTextIntoLines = (text) => {
-      if (!text || text.trim() === "") return [""];
-      doc.font("Helvetica").fontSize(10);
+    const monthYearLabel = new Date().toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
 
-      const words = text.split(/\s+/);
+    // Split remarks to fit column width, into multiple ruled lines
+    const splitTextIntoLines = (text) => {
+      if (!text || String(text).trim() === "") return [""];
+      doc.font("Helvetica").fontSize(9);
+
+      const words = String(text).split(/\s+/);
       const lines = [];
       let currentLine = "";
 
       for (const word of words) {
-        const testLine = currentLine ? currentLine + " " + word : word;
-        const testWidth = doc.widthOfString(testLine);
-
-        if (testWidth > remarksW && currentLine) {
-          // Current line is full — push it and start a new line with this word
+        const test = currentLine ? `${currentLine} ${word}` : word;
+        if (doc.widthOfString(test) > remarksW && currentLine) {
           lines.push(currentLine);
           currentLine = word;
         } else {
-          currentLine = testLine;
+          currentLine = test;
         }
       }
-
       if (currentLine) lines.push(currentLine);
-      return lines.length > 0 ? lines : [""];
+      return lines.length ? lines : [""];
     };
 
-    
-    // ====== Draw page header + table header ======
-    const drawPageHeader = () => {
-      pageNum++;
-
-     doc.font("Helvetica").fontSize(9);
-     doc.text("", left, pageTop, {
-       align: "center",
-     width: right - left,
-      });
-      doc.text("", {
-        align: "center",
-      });
-
-     doc.font("Helvetica-Bold").fontSize(10);
-      doc.text("", {
-        align: "justified",
-      });
-      doc.text("", { align: "center" });
-      
-      doc.moveDown(1);
-
-      // Facility / Month-Year lines
-      let y = doc.y + 8;
-      const lineGap = 8;
-      doc.font("Helvetica").fontSize(12);
-      doc.text("LAGUINDINGAN CNF", left + 60, y);
-      /*doc
-        .moveTo(left + 41, y + lineGap)
-        .lineTo(left + 200, y + lineGap)
-        .stroke(0);*/
-      
-      doc.text("", left + 380, y);
-      /*doc
-        .moveTo(left + 443, y + lineGap)
-        .lineTo(right, y + lineGap)
-        .stroke();*/
-
-         const monthYear = new Date().toLocaleDateString("en-GB", {
-        month: "long",
-        year: "numeric",
-      });
-      
-      doc.font("Helvetica").fontSize(12);
-        doc.text(monthYear, left + 455, y);
-
-      if (facility) {
-        doc.font("Helvetica").fontSize(12);
-        doc.text(String(facility), left + 60, y, { width: 190 });
-      }
-
-      // Title
-      y += 28;
-      doc.font("Helvetica-Bold").fontSize(10);
-      doc.text("", left, y, {
-        width: right - left,
-        align: "center",
-      });
-
-      // Continuation label for pages after the first
-      if (pageNum > 1) {
-        doc.font("Helvetica").fontSize(10);
-        /*doc.text(`(Continuation - Page ${pageNum})`, left, y + 12, {
-          width: right - left,
-          align: "center",
-        });
-        y += 12;*/
-      }
-
-      // Table column headers
-      y += 18;
-      tableTopOnPage = y;
-
-      drawHLine(y, 1.0);
-
-      doc.font("Helvetica-Bold").fontSize(10);
-      doc.text("", xDate, y + 4, {
-        width: xTime - xDate,
-        align: "center",
-      });
-      doc.text("", xTime, y + 4, {
-        width: xRemarks - xTime,
-        align: "center",
-      });
-      doc.text("", xRemarks, y + 4, {
-        width: xInitials - xRemarks,
-        align: "center",
-      });
-      doc.text("", xInitials, y + 4, {
-        width: xEnd - xInitials,
-        align: "center",
-      });
-
-      drawHLine(y + headerH, 1.0);
-
-      curY = y + headerH;
-    };
-    console.log("curY:", curY);
-console.log("curY + 120:", curY + 120);
-
-    // ====== Draw signatures (only on the last page) ======
-    // ====== Draw signatures (only on the last page) ======
-    const drawSignatures = () => {
-      const sigY = curY + 40;
-      const lineW = 160; 
-      const labelGap = 2;   
-      const nameGap = 12;   
-      const xL = left;
-      const xR = right - lineW;
-
-      doc.font("Helvetica-Bold").fontSize(10);
-
-      // --- DAY SHIFT SUPERVISOR ---
-      // Uses the locked name found at the start of the process
-      if (lockedDayName) {
-          doc.text(lockedDayName, xR, sigY - nameGap, { width: lineW, align: "center" });
-      }
-      doc.moveTo(xR, sigY).lineTo(xR + lineW, sigY);
-      doc.font("Helvetica").fontSize(10);
-      doc.text("", xR, sigY + labelGap, { width: lineW, align: "center" });
-
-      // --- EVE-MID SHIFT SUPERVISOR ---
-      // Even if Day was found in row 1 and Night in row 20, they display together here
-      const sigY_Night = sigY + 45;
-      doc.font("Helvetica-Bold").fontSize(10);
-      if (lockedNightName) {
-          doc.text(lockedNightName, xR, sigY_Night - nameGap, { width: lineW, align: "center" });
-      }
-      doc.moveTo(xR, sigY_Night).lineTo(xR + lineW, sigY_Night);
-      doc.font("Helvetica").fontSize(10);
-      doc.text("", xR, sigY_Night + labelGap, { width: lineW, align: "center" });
-
-      // --- FACILITY IN CHARGE ---
-      doc.font("Helvetica-Bold").fontSize(10);
-      doc.text("GERALDMIL M. PANGAN", xL, sigY_Night - nameGap, { width: lineW, align: "center" });
-      doc.moveTo(xL, sigY_Night).lineTo(xL + lineW, sigY_Night);
-      doc.font("Helvetica").fontSize(10);
-      doc.text("", xL, sigY_Night + labelGap, { width: lineW, align: "center" });
-    };
-
-    // ====== Start a new continuation page ======
-    const startNewPage = () => {
-      // Close vertical lines of current table
-      drawTableVerticals(tableTopOnPage, curY);
-
-      // Add new page
-      doc.addPage();
-
-      // Draw header again
-      drawPageHeader();
-    };
-
-    // How many fixed lines remain on the current page
     const linesRemainingOnPage = () => {
-      const bottom = PAGE_BOTTOM - SIGNATURE_SPACE
+      const bottom = PAGE_BOTTOM - SIGNATURE_SPACE;
       return Math.floor((bottom - curY) / ROW_H);
     };
 
+    // ====== DOCX-style page header + table header ======
+    const drawPageHeader = () => {
+    pageNum++;
+
+    // ✅ force where the page content starts
+    doc.y = PAGE_START_Y;
+
+    // Facility / Month-Year rows
+    const yInfo = doc.y;
+    doc.font("Helvetica-Bold").fontSize(10).text("LAGUINDINGAN CNF", left + 85, yInfo);
+    doc.font("Helvetica").fontSize(10).text(monthYearLabel, left + 470, yInfo);
+
+    doc.moveDown(1.2);
+
+
+    doc.moveDown(0.8);
+
+    // 👇 Add this line
+    const TABLE_OFFSET_Y = 34; // increase to push table lower
+
+    const y = doc.y + TABLE_OFFSET_Y;
+    tableTopOnPage = y;
+
+    // Top border of table
+    drawHLine(y, 1.0);
+
+    // Start writing rows immediately
+    curY = y;
+
+    // Draw vertical lines starting from here
+    drawTableVerticals(y, y);
+
+
+  };
+
+
+const drawSignatures = () => {
+  const lineW = 160;
+  const nameGap = 12;
+  const xL = left;
+  const xR = right - lineW;
+
+  // ✅ Anchor near the bottom of the page
+  const bottomMargin = doc.page.margins.bottom;           // usually 36
+  const baseY = doc.page.height - bottomMargin - 98;      // move this number to go higher/lower
+
+  const sigY = baseY;
+  const sigY2 = baseY + 45;
+
+  doc.font("Helvetica-Bold").fontSize(10);
+
+  // DAY SHIFT SUPERVISOR
+  if (lockedDayName) {
+    doc.text(lockedDayName, xR, sigY - nameGap, { width: lineW, align: "center" });
+  }
+  doc.moveTo(xR, sigY).lineTo(xR + lineW, sigY);
+
+  // EVE-MID SHIFT SUPERVISOR
+  if (lockedNightName) {
+    doc.text(lockedNightName, xR, sigY2 - nameGap, { width: lineW, align: "center" });
+  }
+  doc.moveTo(xR, sigY2).lineTo(xR + lineW, sigY2);
+
+  // FACILITY IN CHARGE
+  doc.text("GERALDMIL M. PANGAN", xL, sigY2 - nameGap, { width: lineW, align: "center" });
+  doc.moveTo(xL, sigY2).lineTo(xL + lineW, sigY2);
+};
+
+// ✅ Close table lines + draw signatures for the CURRENT page
+const finalizePage = () => {
+  // close vertical lines for the table area on this page
+  drawTableVerticals(tableTopOnPage, curY);
+
+  // draw signatures at bottom of THIS page
+  drawSignatures();
+};
+
+    // ====== Page break ======
+// ====== Page break ======
+const startNewPage = () => {
+  // ✅ finish current page (table borders + signatures)
+  finalizePage();
+
+  doc.addPage();
+  drawPageHeader();
+};
     // ====== Begin first page ======
     drawPageHeader();
+// ====== Render logs in fixed 34 ruled rows per page (remarks can consume multiple rows) ======
+let logIndex = 0;
+let pendingLines = [];
+let pendingMeta = null; // { dateStr, displayTime, initials }
+let metaPrinted = false;
 
-    // ====== Render rows (fixed-line ruled-paper style) ======
-    for (let i = 0; i < rows.length; i++) {
-      const log = rows[i];
-      const isLastEntry = i === rows.length - 1;
+while (logIndex < rows.length || pendingLines.length > 0 || logIndex === 0) {
 
-      const remarksText = log.remarks || "";
-      const remarkLines = splitTextIntoLines(remarksText);
+  for (let row = 0; row < ROWS_PER_PAGE; row++) {
 
-      // If not even one line fits, go to a new page
-      if (curY + ROW_H > PAGE_BOTTOM - 120) {
-        startNewPage();
-      }
-
-
-      // Format date and time
-      const displayTime = log.timeUTC || (log.timestamp ? new Date(log.timestamp).toLocaleTimeString("en-GB", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }) : "");
-
-      const d = new Date(log.timestamp);
-      const dateStr = d.toISOString().slice(0, 10);
-
-      // Draw Date, Time, and Initials on the first line of this log entry
-      doc.font("Helvetica").fontSize(9);
-      doc.text(dateStr, xDate + 6, curY + CELL_PAD,  { width: 50, align: "center",   lineBreak: false });
-      doc.text(displayTime, xTime - 5, curY + CELL_PAD, { width: 50, align: "center" });
-      doc.text(log.initials || "", xInitials, curY + CELL_PAD, { width: xEnd - xInitials, align: "center" });
-
-      // Draw Remarks line by line
-      remarkLines.forEach((line, rIdx) => {
-        // If remarks overflow to a new page, handle the break
-        if (rIdx > 0 && linesRemainingOnPage() < 1) {
-            startNewPage();
-        }
-
-        doc.text(line, xRemarks + CELL_PAD + 10, curY + CELL_PAD, { 
-            width: remarksW, 
-            align: "justified",
-            lineBreak: false 
-        });
-        
-        curY += ROW_H;
-        drawHLine(curY);
-      });
+    // New page (after first page)
+    if (row === 0 && (logIndex !== 0 || pendingLines.length > 0) && curY !== tableTopOnPage) {
+      startNewPage();
     }
 
-    // If no rows at all, still show empty ruled lines
-    if (rows.length === 0) {
-      for (let i = 0; i < 34; i++) {
-        curY += ROW_H;
-        drawHLine(curY, 0.8);
+    // Load next log if we don't have lines to print
+    if (pendingLines.length === 0) {
+      const log = rows[logIndex];
+
+      if (log) {
+        const d = log.timestamp ? new Date(log.timestamp) : null;
+
+        const dateStr = d ? d.toISOString().slice(0, 10) : "";
+        const displayTime =
+          log.timeUTC ||
+          (d
+            ? d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
+            : "");
+
+        const initials = log.initials || "";
+        const remarksText = log.remarks || "";
+
+        pendingLines = splitTextIntoLines(remarksText); // your existing function
+        pendingMeta = { dateStr, displayTime, initials };
+        metaPrinted = false;
+
+        logIndex++;
+      } else {
+        // No more logs: blank line
+        pendingLines = [""];
+        pendingMeta = { dateStr: "", displayTime: "", initials: "" };
+        metaPrinted = true; // keep blanks
       }
     }
-   const requiredSignatureSpace = 120;
 
-    if (curY + requiredSignatureSpace > PAGE_BOTTOM) {
-      doc.addPage();
-      drawPageHeader();
+    // Print exactly ONE ruled row
+    const line = pendingLines.shift() ?? "";
+
+    doc.font("Helvetica").fontSize(9);
+
+    // Only print date/time/initials on the FIRST line of that entry
+    const dateStr = (!metaPrinted && pendingMeta) ? pendingMeta.dateStr : "";
+    const displayTime = (!metaPrinted && pendingMeta) ? pendingMeta.displayTime : "";
+    const initials = (!metaPrinted && pendingMeta) ? pendingMeta.initials : "";
+
+    doc.text(dateStr, xDate, curY + CELL_PAD, {
+      width: wDate ,
+      align: "center",
+      lineBreak: false,
+    });
+
+    doc.text(displayTime, xTime, curY + CELL_PAD, {
+      width: wTime,
+      align: "center",
+      lineBreak: false,
+    });
+
+    doc.text(initials, xInitials, curY + CELL_PAD, {
+      width: wInitials,
+      align: "center",
+      lineBreak: false,
+    });
+
+    // IMPORTANT: keep width so it wraps into our split lines, BUT we only draw one line here
+    doc.text(line, xRemarks + CELL_PAD, curY + CELL_PAD, {
+      width: remarksW,
+      align: "left",
+      lineBreak: false,
+    });
+
+    // After printing first line, clear meta
+    if (!metaPrinted) metaPrinted = true;
+
+    // Advance to next ruled row
+    curY += ROW_H;
+    drawHLine(curY);
+  }
+
+  // If we've printed all logs and no pending lines left, stop
+  if (logIndex >= rows.length && pendingLines.length === 0) break;
+}
+
+
+    // If signatures won't fit, push to new page
+    if (curY + SIGNATURE_SPACE > PAGE_BOTTOM) {
+      startNewPage();
     }
 
-    drawTableVerticals(tableTopOnPage, curY);
-    drawSignatures();
+// ✅ Finish the last page too
+finalizePage();
 
-
-    doc.end();
+doc.end();
   });
 });
 
-/* =========================
-   GET LATEST LOG ENTRY
-========================= */
-app.get("/logs/latest", (req, res) => {
-  const sql = `
-    SELECT *
-    FROM logs
-    ORDER BY timestamp DESC
-    LIMIT 3
-  `;
-
-  db.all(sql, [], (err, rows) => {
-    // use db.all instead of db.get for multiple rows
-    if (err) {
-      console.error("Error fetching latest log:", err.message);
-      return res.status(500).json({ message: "Failed to fetch latest log" });
-    }
-
-    if (!rows || rows.length === 0) return res.json([]);
-    res.json(rows);
-  });
-});
-
-// GET
-
-app.get("/debug/routes", (req, res) => {
-  const routes = app._router.stack
-    .filter((r) => r.route)
-    .map(
-      (r) => Object.keys(r.route.methods)[0].toUpperCase() + " " + r.route.path,
-    );
-  res.json(routes);
-});
 
 /* =========================
    UPDATE LOG ENTRY
