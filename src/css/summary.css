@@ -470,6 +470,9 @@
   font-weight: normal;
   font-family: "Arimo", sans-serif;
 }
+.texts-two .remarks{
+  text-align: justify;
+}
 
 .table-header .search-input {
   position: relative;

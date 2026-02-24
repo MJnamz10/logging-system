@@ -281,7 +281,7 @@
   left: 340px;
   height: 650px;
 }
-.table-container {
+.entry-container .table-container {
   width: 1150px;
   border: 1pt solid #e5e7eb;
   background-color: white;
@@ -292,6 +292,7 @@
   max-height: 530px; /* or whatever height fits your layout */
   overflow-y: auto; /* vertical scrollbar if content exceeds */
   overflow-x: auto; /* hide horizontal scroll (optional) */
+  border: none;
 }
 
 .entry-text {
