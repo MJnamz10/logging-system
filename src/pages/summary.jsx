@@ -31,7 +31,7 @@ function Summary({ latestLogs, setLatestLogs }) {
     console.log("Saving log entry with images:", entry); // Debug log
 
     try {
-      const res = await fetch("http://localhost:5000/logs", {
+      const res = await fetch("http://localhost:5001/logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(entry),
@@ -70,7 +70,7 @@ function Summary({ latestLogs, setLatestLogs }) {
     console.log("Updating log entry:", updatedLog);
 
     try {
-      const res = await fetch(`http://localhost:5000/logs/${updatedLog.id}`, {
+      const res = await fetch(`http://localhost:5001/logs/${updatedLog.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedLog),

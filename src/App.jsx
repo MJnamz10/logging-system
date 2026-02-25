@@ -27,7 +27,7 @@ function App() {
   ---------------------------------------------------------- */
   const fetchAllLogs = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/logs");
+      const res = await fetch("http://localhost:5001/logs");
       if (!res.ok) throw new Error("Server error");
       const data = await res.json();
       

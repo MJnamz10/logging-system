@@ -590,6 +590,10 @@
 .delete-btn:hover {
   color: #c0392b;
 }
+
+
+
+
 .logs-table td.actions-icons {
   gap: 20px;
   border-right: none;
