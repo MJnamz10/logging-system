@@ -523,11 +523,21 @@ app.put("/logs/:id", (req, res) => {
 ========================= */
 app.delete("/logs/:id", (req, res) => {
   const { id } = req.params;
+  const { password } = req.body;
+
+  // Check password first
+  if (password !== "caapANS10") {
+    return res.status(403).json({ message: "Incorrect password" });
+  }
 
   db.run("DELETE FROM logs WHERE id = ?", [id], function (err) {
     if (err) {
       console.error("Error deleting log:", err.message);
       return res.status(500).json({ message: "Failed to delete log" });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "Log not found" });
     }
 
     console.log("Deleted log ID:", id);
