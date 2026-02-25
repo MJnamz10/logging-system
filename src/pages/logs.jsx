@@ -249,7 +249,7 @@ function Logs() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await fetch("http://localhost:5000/logs");
+        const res = await fetch("http://localhost:5001/logs");
         const data = await res.json();
         setLogsData(data);
       } catch (err) {

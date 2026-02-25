@@ -51,7 +51,7 @@ const LogModal = ({ isOpen, onClose, data }) => {
 
       // Fetch PDF from backend filtered by date
       const response = await fetch(
-        `http://localhost:5000/logs/export/pdf?from=${logDate}&to=${logDate}`,
+        `http://localhost:5001/logs/export/pdf?from=${logDate}&to=${logDate}`,
       );
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
