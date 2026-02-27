@@ -153,6 +153,14 @@ function Summary({ latestLogs, setLatestLogs }) {
             <img src={logIcon} alt="icon" className="dash-icon" />
             <h className="logs">Summary</h>
           </div>
+          {/* 👇 ADD THIS NEW DPOR BLOCK HERE 👇 */}
+          <div
+            className={location.pathname === "/dpor" ? "active-item" : "item"}
+            onClick={() => navigate("/dpor")}
+          >
+            <img src={logIcon} alt="icon" className="dash-icon" />
+            <h className="logs">DPOR</h>
+          </div>
 
           {/* ====== LOG ENTRIES TABLE ====== */}
           <div className="entry-container1">

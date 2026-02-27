@@ -1,0 +1,297 @@
+/* ============================================================
+ CSS NOT USED but KEEP FOR FUTURE REFERENCE
+============================================================ */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f7fe; /* Light background */
+  height: 100%;
+}
+
+.dpor-page-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.sidebar-container {
+  width: 290px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  z-index: 100;
+}
+
+.title-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.title-container h1 {
+  font-size: 20px;
+  color: #1b2559;
+  margin: 5px 0;
+  font-weight: 700;
+}
+
+.title-container h2 {
+  font-size: 12px;
+  color: #a3aed0;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: #e0e5f2;
+  margin-bottom: 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #a3aed0;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background-color: #f4f7fe;
+  color: #1b2559;
+}
+
+.nav-item.active {
+  background-color: #4318ff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(67, 24, 255, 0.3);
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+}
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+.main-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* --- Header --- */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-title {
+  font-size: 24px;
+  color: #1b2559;
+  font-weight: 700;
+  margin: 0;
+}
+
+.datetime-display {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  font-size: 14px;
+  color: #2b3674;
+  font-weight: 600;
+}
+
+.clock-icon {
+  width: 18px;
+  margin-right: 10px;
+}
+
+/* --- Action Section (Big Button) --- */
+.action-section {
+  margin-bottom: 30px;
+}
+
+.big-dpor-btn {
+  background: linear-gradient(135deg, #2b7fff 0%, #1c398e 100%);
+  border: none;
+  border-radius: 20px;
+  padding: 20px 30px;
+  width: 100%;
+  max-width: 450px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(28, 57, 142, 0.2);
+  display: flex;
+  align-items: center;
+}
+
+.big-dpor-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(28, 57, 142, 0.35);
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-icon-bg {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon-img {
+  width: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.btn-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.btn-title {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.btn-desc {
+  color: #dbeafe;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+/* --- Table Section --- */
+.table-wrapper {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  flex: 1; /* Fills remaining height */
+  display: flex;
+  flex-direction: column;
+}
+
+.table-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1b2559;
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-status {
+  font-size: 12px;
+  color: #a3aed0;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: #f4f7fe;
+  padding: 10px 15px;
+  border-radius: 30px;
+  width: 300px;
+}
+
+.search-icon {
+  width: 16px;
+  margin-right: 10px;
+  opacity: 0.5;
+}
+
+.search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  color: #2b3674;
+}
+
+/* --- Table Styling --- */
+.table-scroll-container {
+  overflow-x: auto;
+}
+
+.dpor-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dpor-table th {
+  text-align: left;
+  color: #a3aed0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 12px 10px;
+  border-bottom: 1px solid #e0e5f2;
+}
+
+.dpor-table td {
+  padding: 15px 10px;
+  color: #2b3674;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #f4f7fe;
+}
+
+.dpor-table tr:hover {
+  background-color: #f9fbfc;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.no-entry {
+  text-align: center;
+  padding: 30px;
+  color: #a3aed0;
+}

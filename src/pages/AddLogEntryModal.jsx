@@ -152,7 +152,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
               <input
                 required
                 placeholder="e.g. JD"
-                value={initials}
+                value={initials}TEST
                 onChange={(e) => setInitials(e.target.value)}
               />
             </div>

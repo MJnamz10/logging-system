@@ -248,6 +248,14 @@ function Dashboard({ latestLogs, setLatestLogs }) {
             <h className="logs">Summary</h>
           </div>
 
+          <div
+            className={location.pathname === "/dpor" ? "active-item" : "item"}
+            onClick={() => navigate("/dpor")}
+          >
+            <img src={logIcon} alt="icon" className="dash-icon" />
+            <h className="logs">DPOR</h>
+          </div>
+
           {/* ====== HEADER WITH CLOCK ====== */}
           <div className="header-container">
             <h className="header-title">Air Navigation Service</h>
