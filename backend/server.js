@@ -189,7 +189,7 @@ app.get("/logs/export/pdf", (req, res) => {
       `inline; filename="daily-maintenance-log.pdf"`
     );
 
-    const doc = new PDFDocument({ size: "A4", margin: 10 });
+    const doc = new PDFDocument({ size: "A4", margin: 20 });
     doc.pipe(res);
 
     // ====== Layout constants ======
@@ -198,16 +198,16 @@ app.get("/logs/export/pdf", (req, res) => {
     const left = doc.page.margins.left;   // 36
     const right = PAGE_W - doc.page.margins.right; // 559
     const CELL_PAD = 2;
-    const PAGE_START_Y = 118; 
+    const PAGE_START_Y = 116; 
 
     const ROW_H = 15.5;               // ruled line height
     const SIGNATURE_SPACE = 0;    // reserved space on last page
     const PAGE_BOTTOM = PAGE_H - doc.page.margins.bottom; // ~806
 
     // Column widths (adjust if you want)
-    const wDate = 70;
-    const wTime = 55;
-    const wInitials = 70;
+    const wDate = 60;
+    const wTime = 51;
+    const wInitials = 87;
     const wRemarks = (right - left) - (wDate + wTime + wInitials);
 
     // Column X positions
