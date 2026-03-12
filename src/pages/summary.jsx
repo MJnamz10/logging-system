@@ -8,41 +8,30 @@ import AddLogEntryModal from "./AddLogEntryModal";
 import { useLocation, useNavigate } from "react-router-dom";
 
 /* ============================================================
-   DASHBOARD COMPONENT
-   Main dashboard page with log entries table and quick actions
+  DASHBOARD COMPONENT
 ============================================================ */
 function Summary({ latestLogs, setLatestLogs }) {
   const location = useLocation();
   const navigate = useNavigate();
 
   /* ----------------------------------------------------------
-     STATE VARIABLES
+  STATE VARIABLES
   ---------------------------------------------------------- */
 
-  const [showAddLog, setShowAddLog] = useState(false); // Toggle Add Log modal
-  const [editingLog, setEditingLog] = useState(null); // Log being edited (null = not editing)
-  const [searchTerm, setSearchTerm] = useState(""); // Search filter text
-  const [previewImage, setPreviewImage] = useState(null); // for full-screen preview
+  const [showAddLog, setShowAddLog] = useState(false); 
+  const [editingLog, setEditingLog] = useState(null); 
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [previewImage, setPreviewImage] = useState(null); 
+
 
   /* ----------------------------------------------------------
-     EFFECT: Real-time clock update (every second)
-  ---------------------------------------------------------- */
-
-  /* ----------------------------------------------------------
-     ACTION: Export logs as PDF
-     Downloads all logs as a formatted PDF document
-  ---------------------------------------------------------- */
-  /* ----------------------------------------------------------
-     ACTION: Add new log entry
-     Sends new log to backend and updates local state with response
-     - entry: Object containing timeUTC, initials, remarks, images
-     - Returns true on success, false on failure
+  ACTION: Add new log entry
   ---------------------------------------------------------- */
   const handleSaveLog = async (entry) => {
     console.log("Saving log entry with images:", entry); // Debug log
 
     try {
-      const res = await fetch("http://localhost:5000/logs", {
+      const res = await fetch("http://localhost:5001/logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(entry),
@@ -70,21 +59,18 @@ function Summary({ latestLogs, setLatestLogs }) {
   };
 
   /* ----------------------------------------------------------
-     ACTION: Update existing log entry
-     Sends updated log to backend and updates local state
-     - updatedLog: Object with id and updated fields
+    ACTION: Update existing log entry
   ---------------------------------------------------------- */
   const handleUpdateLog = async (updatedLog) => {
-    // Validate ID exists before sending request
     if (!updatedLog.id) {
       console.error("Error: The log object is missing an ID!");
       return;
     }
 
-    console.log("Updating log entry:", updatedLog); // Debug log
+    console.log("Updating log entry:", updatedLog);
 
     try {
-      const res = await fetch(`http://localhost:5000/logs/${updatedLog.id}`, {
+      const res = await fetch(`http://localhost:5001/logs/${updatedLog.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedLog),
@@ -92,9 +78,8 @@ function Summary({ latestLogs, setLatestLogs }) {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Update response:", data); // Debug log
+        console.log("Update response:", data); 
 
-        // Update local state with the modified log
         setLatestLogs((prev) =>
           prev.map((log) =>
             log.id === updatedLog.id ? { ...log, ...data } : log,
@@ -111,9 +96,7 @@ function Summary({ latestLogs, setLatestLogs }) {
     }
   };
   /* ----------------------------------------------------------
-     COMPUTED: Filtered and sorted logs
-     - Sorts by timestamp (oldest to newest)
-     - Filters by search term (time, initials, or remarks)
+  COMPUTED: Filtered and sorted logs
   ---------------------------------------------------------- */
   const filteredLogs = [...latestLogs]
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
@@ -122,19 +105,18 @@ function Summary({ latestLogs, setLatestLogs }) {
       return (
         log.timeUTC.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.initials.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.remarks.toLowerCase().includes(searchTerm.toLowerCase())
+        new RegExp(`\\b${searchTerm}\\b`, "i").test(log.remarks || "")
       );
     });
 
   /* ============================================================
-     RENDER: Main Dashboard Layout
+  RENDER: Main Dashboard Layout
   ============================================================ */
   return (
     <div className="summary-page">
       <div className="sum-header"></div>
 
       <div className="dashboard-container">
-        {/* ------ Logo and Title ------ */}
         <div className="title-container">
           <img src={logo} alt="CAAP Logo" className="logo" />
           <h1>Logging System</h1>
@@ -171,10 +153,17 @@ function Summary({ latestLogs, setLatestLogs }) {
             <img src={logIcon} alt="icon" className="dash-icon" />
             <h className="logs">Summary</h>
           </div>
+          {/* 👇 ADD THIS NEW DPOR BLOCK HERE 👇 */}
+          <div
+            className={location.pathname === "/dpor" ? "active-item" : "item"}
+            onClick={() => navigate("/dpor")}
+          >
+            <img src={logIcon} alt="icon" className="dash-icon" />
+            <h className="logs">DPOR</h>
+          </div>
 
           {/* ====== LOG ENTRIES TABLE ====== */}
           <div className="entry-container1">
-            {/* Table Header with search */}
             <div className="table-header">
               <h className="entry-text">
                 Overall Summary
@@ -261,7 +250,7 @@ function Summary({ latestLogs, setLatestLogs }) {
                         </td>
                         <td>{log.timeUTC}</td>
                         <td>{log.initials}</td>
-                        <td>{log.remarks}</td>
+                        <td className="remarks">{log.remarks}</td>
                         <td className="image-cell">
                           {(() => {
                             if (!log.images)
@@ -288,7 +277,7 @@ function Summary({ latestLogs, setLatestLogs }) {
                                 src={img.data}
                                 alt="log"
                                 className="table-image"
-                                onClick={() => setPreviewImage(img.data)} // open preview
+                                onClick={() => setPreviewImage(img.data)} 
                               />
                             ));
                           })()}
@@ -300,7 +289,7 @@ function Summary({ latestLogs, setLatestLogs }) {
                             >
                               <div
                                 className="image-preview-container"
-                                onClick={(e) => e.stopPropagation()} // prevent closing when clicking image
+                                onClick={(e) => e.stopPropagation()}
                               >
                                 <button
                                   className="preview-close-btn"

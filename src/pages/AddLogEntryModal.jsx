@@ -32,6 +32,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
 
   const fileInputRef = useRef(null);
 
+
   if (!isOpen) return null;
 
   /* ----------------------------------------------------------
@@ -151,7 +152,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
               <input
                 required
                 placeholder="e.g. JD"
-                value={initials}
+                value={initials}TEST
                 onChange={(e) => setInitials(e.target.value)}
               />
             </div>
@@ -163,6 +164,7 @@ function AddLogEntryModal({ isOpen, onClose, onSave, initialData }) {
                 type="text"
                 value={daysup}
                 onChange={(e) => setDay(e.target.value)}
+                
               />
             </div>
 

@@ -413,6 +413,17 @@
   font-size: 14px;
   table-layout: fixed;
 }
+.logs-table td,
+.logs-table th {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+.logs-table th:nth-child(4),
+.logs-table td:nth-child(4) {
+  width: 12%;
+  white-space: normal; /* allow wrapping */
+}
 .logs-table thead th {
   position: sticky;
   top: 0; /* stick to the top of the scrollable container */
@@ -469,6 +480,9 @@
   font-size: 20px;
   font-weight: normal;
   font-family: "Arimo", sans-serif;
+}
+.texts-two .remarks{
+  text-align: justify;
 }
 
 .table-header .search-input {

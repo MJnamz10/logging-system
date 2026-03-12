@@ -46,7 +46,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
 
   // Pass both `from` and `to` as today
   const response = await fetch(
-    `http://localhost:5000/logs/export/pdf?from=${today}&to=${today}`
+    `http://localhost:5001/logs/export/pdf?from=${today}&to=${today}`
   );
 
   const blob = await response.blob();
@@ -70,7 +70,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
     console.log("Saving log entry with images:", entry); // Debug log
 
     try {
-      const res = await fetch("http://localhost:5000/logs", {
+      const res = await fetch("http://localhost:5001/logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(entry),
@@ -112,7 +112,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
     console.log("Updating log entry:", updatedLog); // Debug log
 
     try {
-      const res = await fetch(`http://localhost:5000/logs/${updatedLog.id}`, {
+      const res = await fetch(`http://localhost:5001/logs/${updatedLog.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedLog),
@@ -144,16 +144,38 @@ function Dashboard({ latestLogs, setLatestLogs }) {
      Removes log from backend and local state after confirmation
      - id: ID of the log entry to delete
   ---------------------------------------------------------- */
+ 
   const handleDeleteLog = async (id) => {
-    if (!window.confirm("Delete this log entry?")) return;
+  const password = prompt("Enter admin password to delete this log:");
 
-    await fetch(`http://localhost:5000/logs/${id}`, {
-      method: "DELETE",
-    });
+  if (!password) return;
 
-    // Remove from local state
-    setLatestLogs((prev) => prev.filter((log) => log.id !== id));
-  };
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this log entry? This action cannot be undone."
+  );
+  if (!confirmDelete) return;
+
+  const res = await fetch(`http://localhost:5001/logs/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.message);
+    return;
+  }
+
+  setLatestLogs((prev) => prev.filter((log) => log.id !== id));
+
+  alert("Log entry deleted successfully");
+};
+
+
 
   /* ----------------------------------------------------------
      COMPUTED: Filtered and sorted logs
@@ -176,7 +198,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
       return (
         log.timeUTC.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.initials.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.remarks.toLowerCase().includes(searchTerm.toLowerCase())
+        new RegExp(`\\b${searchTerm}\\b`, "i").test(log.remarks || "")
       );
     });
 
@@ -224,6 +246,14 @@ function Dashboard({ latestLogs, setLatestLogs }) {
           >
             <img src={logIcon} alt="icon" className="dash-icon" />
             <h className="logs">Summary</h>
+          </div>
+
+          <div
+            className={location.pathname === "/dpor" ? "active-item" : "item"}
+            onClick={() => navigate("/dpor")}
+          >
+            <img src={logIcon} alt="icon" className="dash-icon" />
+            <h className="logs">DPOR</h>
           </div>
 
           {/* ====== HEADER WITH CLOCK ====== */}
@@ -460,6 +490,7 @@ function Dashboard({ latestLogs, setLatestLogs }) {
           }}
           onSave={editingLog ? handleUpdateLog : handleSaveLog}
           initialData={editingLog}
+          
         />
       )}
     </div>

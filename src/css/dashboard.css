@@ -281,7 +281,7 @@
   left: 340px;
   height: 650px;
 }
-.table-container {
+.entry-container .table-container {
   width: 1150px;
   border: 1pt solid #e5e7eb;
   background-color: white;
@@ -292,6 +292,7 @@
   max-height: 530px; /* or whatever height fits your layout */
   overflow-y: auto; /* vertical scrollbar if content exceeds */
   overflow-x: auto; /* hide horizontal scroll (optional) */
+  border: none;
 }
 
 .entry-text {
@@ -517,12 +518,12 @@
 
 .logs-table th:nth-child(2), /* Date column */
 .logs-table td:nth-child(2) {
-  width: 15%;
+  width: 10%;
 }
 
 .logs-table th:nth-child(3), /* Time column */
 .logs-table td:nth-child(3) {
-  width: 15%;
+  width: 35%;
 }
 
 .logs-table th:nth-child(4), /* Initials column */
@@ -589,6 +590,10 @@
 .delete-btn:hover {
   color: #c0392b;
 }
+
+
+
+
 .logs-table td.actions-icons {
   gap: 20px;
   border-right: none;

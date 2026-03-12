@@ -4,6 +4,7 @@ import Login from "./pages/login.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Logs from "./pages/logs.jsx";
 import Summary from "./pages/summary.jsx";
+import DPOR from "./pages/dpor.jsx"; 
 
 /* ============================================================
    APP COMPONENT - Main Application Entry Point
@@ -17,7 +18,11 @@ function App() {
   ---------------------------------------------------------- */
   const [latestLogs, setLatestLogs] = useState(() => {
     const saved = localStorage.getItem("cached_logs");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
   /* ----------------------------------------------------------
@@ -27,7 +32,7 @@ function App() {
   ---------------------------------------------------------- */
   const fetchAllLogs = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/logs");
+      const res = await fetch("http://localhost:5001/logs");
       if (!res.ok) throw new Error("Server error");
       const data = await res.json();
       
@@ -73,7 +78,12 @@ function App() {
         
         {/* Logs Page - Read-only view */}
         <Route path="/logs" element={<Logs latestLogs={latestLogs} />} />
-         <Route
+        
+        {/* DPOR Page - Daily Performance & Operational Report */}
+        <Route path="/dpor" element={<DPOR />} />
+
+        {/* Summary Page */}
+        <Route
           path="/summary"
           element={
             <Summary

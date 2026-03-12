@@ -249,7 +249,7 @@ function Logs() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await fetch("http://localhost:5000/logs");
+        const res = await fetch("http://localhost:5001/logs");
         const data = await res.json();
         setLogsData(data);
       } catch (err) {
@@ -270,6 +270,7 @@ function Logs() {
           <h2>MENU</h2>
         </div>
         <div className="sidebar-divider"></div>
+        
         <div className="dash-options">
           <div
             className={
@@ -295,6 +296,15 @@ function Logs() {
             <img src={log} alt="icon" className="dash-icon" />
             <h className="logs">Summary</h>
           </div>
+          {/* 👇 ADD THIS NEW DPOR BLOCK HERE 👇 */}
+          <div
+            className={location.pathname === "/dpor" ? "active-item" : "item"}
+            onClick={() => navigate("/dpor")}
+          >
+            <img src={log} alt="icon" className="dash-icon" />
+            <h className="logs">DPOR</h>
+          </div>
+        
         </div>
       </div>
 

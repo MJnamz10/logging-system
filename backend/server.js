@@ -523,6 +523,12 @@ app.put("/logs/:id", (req, res) => {
 ========================= */
 app.delete("/logs/:id", (req, res) => {
   const { id } = req.params;
+  const { password } = req.body;
+
+  // Check password first
+  if (password !== "caapANS10") {
+    return res.status(403).json({ message: "Incorrect password" });
+  }
 
   db.run("DELETE FROM logs WHERE id = ?", [id], function (err) {
     if (err) {
@@ -530,13 +536,113 @@ app.delete("/logs/:id", (req, res) => {
       return res.status(500).json({ message: "Failed to delete log" });
     }
 
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "Log not found" });
+    }
+
     console.log("Deleted log ID:", id);
     res.json({ success: true });
   });
 });
 
+/* =========================
+   FETCH ALL DPOR ENTRIES
+   GET /dpor
+========================= */
+app.get("/dpor", (req, res) => {
+  const sql = "SELECT * FROM dpor_entries ORDER BY created_at DESC";
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error("Error fetching DPOR:", err.message);
+      return res.status(500).json({ message: "Failed to fetch DPOR entries" });
+    }
+    res.json(rows);
+  });
+});
 
+/* =========================
+   ADD NEW DPOR ENTRY
+   POST /dpor
+========================= */
+app.post("/dpor", (req, res) => {
+  const { report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory } = req.body;
+  const created_at = new Date().toISOString();
 
-app.listen(5000, () =>
-  console.log("✅ Server running on http://localhost:5000"),
+  const sql = `
+    INSERT INTO dpor_entries (report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.run(sql, [report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory, created_at], function (err) {
+    if (err) {
+      console.error("Error saving DPOR:", err.message);
+      return res.status(500).json({ message: "Failed to save DPOR entry" });
+    }
+    res.json({ 
+      id: this.lastID, 
+      report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory, created_at 
+    });
+  });
+});
+
+/* =========================
+   UPDATE DPOR ENTRY
+   PUT /dpor/:id
+========================= */
+app.put("/dpor/:id", (req, res) => {
+  const { id } = req.params;
+  const { report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory } = req.body;
+
+  if (!id || id === "undefined") {
+    return res.status(400).json({ message: "Invalid ID provided" });
+  }
+
+  const sql = `
+    UPDATE dpor_entries 
+    SET report_date = ?, dpor_for = ?, operational_remarks = ?, staff_on_ot = ?, personnel_count = ?, signatory = ? 
+    WHERE id = ?
+  `;
+
+  db.run(sql, [report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory, id], function (err) {
+    if (err) {
+      console.error("Database Error:", err.message);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    if (this.changes === 0) {
+      console.log("No rows updated. ID may not exist:", id);
+      return res.status(404).json({ message: "DPOR entry not found" });
+    }
+
+    console.log("Successfully updated DPOR ID:", id);
+    res.json({ id, report_date, dpor_for, operational_remarks, staff_on_ot, personnel_count, signatory });
+  });
+});
+
+/* =========================
+   DELETE DPOR ENTRY
+   DELETE /dpor/:id
+========================= */
+app.delete("/dpor/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM dpor_entries WHERE id = ?", [id], function (err) {
+    if (err) {
+      console.error("Error deleting DPOR:", err.message);
+      return res.status(500).json({ message: "Failed to delete DPOR entry" });
+    }
+
+    console.log("Deleted DPOR ID:", id);
+    res.json({ success: true });
+  });
+}); 
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, "../dist")));
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
+});
+
+app.listen(5001, () =>
+  console.log("✅ Server running on http://localhost:5001"),
 );

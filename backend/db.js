@@ -29,6 +29,20 @@ db.run(`
   )
 `);
 
+ // --- NEW TABLE: DPOR ENTRIES ---
+  db.run(`
+    CREATE TABLE IF NOT EXISTS dpor_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      report_date TEXT,
+      dpor_for TEXT,
+      operational_remarks TEXT,
+      staff_on_ot TEXT,
+      personnel_count TEXT,
+      signatory TEXT,
+      created_at TEXT
+    )
+  `);
+
 const addColumn = (colName) => {
 // Add images column if it doesn't exist (for existing databases)
 db.run(`ALTER TABLE logs ADD COLUMN images TEXT DEFAULT '[]'`, (err) => {
