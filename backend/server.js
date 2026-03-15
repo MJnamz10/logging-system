@@ -230,14 +230,14 @@ app.get("/logs/export/pdf", (req, res) => {
     const drawHLine = (y, w = 0.8) => {
       doc.save();
       doc.lineWidth(w);
-      doc.moveTo(left, y).lineTo(right, y).stroke();
+      doc.moveTo(left, y).lineTo(right, y);
       doc.restore();
     };
 
     const drawVLine = (x, y1, y2, w = 0.8) => {
       doc.save();
       doc.lineWidth(w);
-      doc.moveTo(x, y1).lineTo(x, y2).stroke(); //.stroke()
+      doc.moveTo(x, y1).lineTo(x, y2); //.stroke()
       doc.restore();
     };
 
@@ -636,10 +636,12 @@ app.delete("/dpor/:id", (req, res) => {
     res.json({ success: true });
   });
 }); 
-
 const path = require("path");
+
 app.use(express.static(path.join(__dirname, "../dist")));
-app.get("/*", (req, res) => {
+
+// Anything that doesn't match an API route should serve the React app
+app.get("/*catchall", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
